@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("EquipmentBorrowing.Domain")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+84526063969cae3a5915bc3f5e7f8c3c95e87f7d")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d349524be9c03d2f478f7eb6946fa47f6e4183c4")]
 [assembly: System.Reflection.AssemblyProductAttribute("EquipmentBorrowing.Domain")]
 [assembly: System.Reflection.AssemblyTitleAttribute("EquipmentBorrowing.Domain")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
