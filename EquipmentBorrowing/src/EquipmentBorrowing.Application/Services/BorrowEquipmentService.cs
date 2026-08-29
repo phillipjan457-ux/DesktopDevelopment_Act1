@@ -83,6 +83,8 @@ public class BorrowEquipmentService
     
         };
         await _borrowingRepository.SaveBorrowing(borrowing, cancellationtoken);
+        equipment.MarkAsBorrowed();
+        await _equipmentRepository.SaveEquipmentAsync(equipment, cancellationtoken);
         return new BorrowResult
         {
             IsSuccess = true,

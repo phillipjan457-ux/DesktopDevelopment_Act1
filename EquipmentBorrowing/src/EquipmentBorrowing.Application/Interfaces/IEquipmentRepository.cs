@@ -5,4 +5,5 @@ using System.Threading;
 public interface IEquipmentRepository
 {
     Task<Equipment?> GetEquipmentByIdAsync(string equipmentId, CancellationToken cancellationToken = default);
+    Task SaveEquipmentAsync(Equipment equipment, CancellationToken cancellationToken = default);
 }
