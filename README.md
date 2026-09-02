@@ -1,28 +1,33 @@
 # DesktopDevelopment_Act1
 
 1. Solution Architecture
-    Domain
+    **Domain**
+
         Holds the core concepts and rules of the borrowing system, independent of any technical concerns. This includes Student, Equipment, Borrowing, and BorrowingStatus. These classes represent what a student, a piece of equipment, and how a borrowing record is, along with behavior that protects their own state.
-    Application
+    **Application**
+
         Holds the use cases and business logic that coordinate Domain objects to perform an operation. BorrowEquipmentService applies the "Borrow Equipment" use case, applying rules such as student authorization, equipment availability, and borrow limits. This layer also defines the repository interfaces (IStudentRepository, IEquipmentRepository, IBorrowingRepository) that describe what data operations the application needs, without specifying how that data is stored.
-    Infrasturcture
+    **Infrasturcture**
+
         Contains the concrete implementations of the repository interfaces defined in Application. For this scenario, InMemoryStudentRepository, InMemoryEquipmentRepository, and InMemoryBorrowingRepository store data in in-memory collections (Dictionary and List) instead of a real database, since no database is required yet.
-    Tests
+    **Tests**
+
         Contains the automated test project structure (EquipmentBorrowing.Tests), set up per the activity's requirements as an initial basis for future test coverage.
 2. Dependency Direction
 
 3. Case Mapping
-Actor: Student
 
-Use Case: Borrow Equipment
+**Actor:** Student
 
-Application Service: BorrowEquipmentService.BorrowEquipmentAsync
+**Use Case:** Borrow Equipment
 
-Domain Objects Used: Student, Equipment, Borrowing, BorrowingStatus
+**Application Service:** BorrowEquipmentService.BorrowEquipmentAsync
 
-Repository Interfaces Used: IStudentRepository, IEquipmentRepository, IBorrowingRepository
+**Domain Objects Used:** Student, Equipment, Borrowing, BorrowingStatus
 
-Infrastructure Implementations Used: InMemoryStudentRepository, InMemoryEquipmentRepository, InMemoryBorrowingRepository
+**Repository Interfaces Used:** IStudentRepository, IEquipmentRepository, IBorrowingRepository
+
+**Infrastructure Implementations Used:** InMemoryStudentRepository, InMemoryEquipmentRepository, InMemoryBorrowingRepository
 
 4. Reflection
     Why should the application service depend on a repository interface instead of directly depending on a database implementation?
