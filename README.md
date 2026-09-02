@@ -1,6 +1,7 @@
 # DesktopDevelopment_Act1
 
-1. Solution Architecture
+# 1. Solution Architecture
+
     **Domain**
 
         Holds the core concepts and rules of the borrowing system, independent of any technical concerns. This includes Student, Equipment, Borrowing, and BorrowingStatus. These classes represent what a student, a piece of equipment, and how a borrowing record is, along with behavior that protects their own state.
@@ -13,9 +14,9 @@
     **Tests**
 
         Contains the automated test project structure (EquipmentBorrowing.Tests), set up per the activity's requirements as an initial basis for future test coverage.
-2. Dependency Direction
+# 2. Dependency Direction
 
-3. Case Mapping
+# 3. Case Mapping
 
 **Actor:** Student
 
@@ -29,7 +30,7 @@
 
 **Infrastructure Implementations Used:** InMemoryStudentRepository, InMemoryEquipmentRepository, InMemoryBorrowingRepository
 
-4. Reflection
+# 4. Reflection
     Why should the application service depend on a repository interface instead of directly depending on a database implementation?
 
     Which parts of your current solution could remain unchanged if SQLite were added later?
