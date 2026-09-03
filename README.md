@@ -21,7 +21,7 @@ Contains the automated test project structure (EquipmentBorrowing.Tests), set up
 ## 2. Dependency Direction
 
 ```
-ConsoleDemo (Executable / Future UI)
+ConsoleDemo (Executable)
         │
         ▼
     Application
