@@ -1,22 +1,26 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using EquipmentBorrowing.Application.Interfaces;
 
 namespace EquipmentBorrowing.Desktop.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase
 {
+    private readonly IEquipmentRepository _equipmentRepository;
+
     [ObservableProperty]
     private object? currentView;
 
-    public MainWindowViewModel()
+    public MainWindowViewModel(IEquipmentRepository equipmentRepository)
     {
+        _equipmentRepository = equipmentRepository;
         CurrentView = "Select a section to begin.";
     }
 
     [RelayCommand]
     private void ShowEquipment()
     {
-        CurrentView = "Equipment view placeholder — built in Part D.";
+        CurrentView = new EquipmentViewModel(_equipmentRepository);
     }
 
     [RelayCommand]

@@ -25,4 +25,8 @@ public class InMemoryEquipmentRepository : IEquipmentRepository
         _equipment[equipment.EquipmentId] = equipment;
         return Task.FromResult<Equipment?>(equipment);
     }
+    public Task<IEnumerable<Equipment>> GetAllEquipmentAsync(CancellationToken cancellationToken = default)
+    {
+        return Task.FromResult(_equipment.Values.AsEnumerable());
+    }
 }
