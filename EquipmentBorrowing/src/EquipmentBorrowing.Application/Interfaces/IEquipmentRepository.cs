@@ -6,4 +6,6 @@ public interface IEquipmentRepository
 {
     Task <Equipment?> GetEquipmentByIdAsync(string equipmentId, CancellationToken cancellationToken = default);
     Task <Equipment?> SaveEquipmentAsync(Equipment equipment, CancellationToken cancellationToken = default);
+    Task<IEnumerable<Equipment>> GetAllEquipmentAsync(CancellationToken cancellationToken = default);
+
 }
