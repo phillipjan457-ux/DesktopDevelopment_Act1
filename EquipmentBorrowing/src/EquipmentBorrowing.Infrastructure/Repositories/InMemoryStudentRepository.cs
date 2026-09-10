@@ -20,4 +20,8 @@ public class InMemoryStudentRepository : IStudentRepository
         _students.TryGetValue(studentId, out var student);
         return Task.FromResult(student);
     }
+    public Task<IEnumerable<Student>> GetAllStudentsAsync(CancellationToken cancellationToken = default)
+    {
+        return Task.FromResult(_students.Values.AsEnumerable());
+    }
 }

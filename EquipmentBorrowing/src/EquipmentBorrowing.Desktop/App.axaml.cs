@@ -17,9 +17,14 @@ public partial class App : Avalonia.Application
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
+            var equipmentRepository = new EquipmentBorrowing.Infrastructure.Repositories.InMemoryEquipmentRepository();
+            var studentRepository = new EquipmentBorrowing.Infrastructure.Repositories.InMemoryStudentRepository();
+            var borrowingRepository = new EquipmentBorrowing.Infrastructure.Repositories.InMemoryBorrowingRepository();
+            var borrowEquipmentService = new EquipmentBorrowing.Application.Services.BorrowEquipmentService(studentRepository, equipmentRepository, borrowingRepository);
+
             desktop.MainWindow = new MainWindow
             {
-                DataContext = new MainWindowViewModel(new EquipmentBorrowing.Infrastructure.Repositories.InMemoryEquipmentRepository()),
+                DataContext = new MainWindowViewModel(equipmentRepository, studentRepository, borrowEquipmentService),
             };
         }
 
