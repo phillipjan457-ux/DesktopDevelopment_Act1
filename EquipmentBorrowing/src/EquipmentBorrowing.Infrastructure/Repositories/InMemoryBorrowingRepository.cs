@@ -22,5 +22,17 @@ public class InMemoryBorrowingRepository : IBorrowingRepository
     {
         var borrows = _borrowings.Where(b => b.Student.StudentId == studentId);
         return Task.FromResult(borrows);
-    }   
+    }
+
+    public Task<Borrowing?> GetBorrowingByIdAsync(string borrowId, CancellationToken cancellationToken = default)
+    {
+        var borrowing = _borrowings.FirstOrDefault(b => b.BorrowId == borrowId);
+        return Task.FromResult(borrowing);
+    }
+
+    public Task<IEnumerable<Borrowing>> ListActiveBorrowings(CancellationToken cancellationToken = default)
+    {
+        var active = _borrowings.Where(b => b.Status == BorrowingStatus.Active);
+        return Task.FromResult(active);
+    }
 }

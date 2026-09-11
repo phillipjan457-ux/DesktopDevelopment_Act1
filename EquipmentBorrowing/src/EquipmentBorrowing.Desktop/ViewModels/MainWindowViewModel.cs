@@ -9,7 +9,9 @@ public partial class MainWindowViewModel : ViewModelBase
 {
     private readonly IEquipmentRepository _equipmentRepository;
     private readonly IStudentRepository _studentRepository;
+    private readonly IBorrowingRepository _borrowingRepository;
     private readonly BorrowEquipmentService _borrowEquipmentService;
+    private readonly ReturnEquipmentService _returnEquipmentService;
 
     [ObservableProperty]
     private object? currentView;
@@ -17,11 +19,15 @@ public partial class MainWindowViewModel : ViewModelBase
     public MainWindowViewModel(
         IEquipmentRepository equipmentRepository,
         IStudentRepository studentRepository,
-        BorrowEquipmentService borrowEquipmentService)
+        IBorrowingRepository borrowingRepository,
+        BorrowEquipmentService borrowEquipmentService,
+        ReturnEquipmentService returnEquipmentService)
     {
         _equipmentRepository = equipmentRepository;
         _studentRepository = studentRepository;
+        _borrowingRepository = borrowingRepository;
         _borrowEquipmentService = borrowEquipmentService;
+        _returnEquipmentService = returnEquipmentService;
         CurrentView = "Select a section to begin.";
     }
 
@@ -34,6 +40,6 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private void ShowBorrowings()
     {
-        CurrentView = "Active Borrowings view placeholder — built in Part F.";
+        CurrentView = new BorrowingsViewModel(_borrowingRepository, _returnEquipmentService);
     }
 }
