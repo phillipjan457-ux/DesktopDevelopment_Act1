@@ -1,8 +1,12 @@
 ﻿using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using EquipmentBorrowing.Application.Interfaces;
+using EquipmentBorrowing.Application.Services;
 using EquipmentBorrowing.Desktop.ViewModels;
 using EquipmentBorrowing.Desktop.Views;
+using EquipmentBorrowing.Infrastructure.Repositories;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace EquipmentBorrowing.Desktop;
 
@@ -17,15 +21,25 @@ public partial class App : Avalonia.Application
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            var equipmentRepository = new EquipmentBorrowing.Infrastructure.Repositories.InMemoryEquipmentRepository();
-            var studentRepository = new EquipmentBorrowing.Infrastructure.Repositories.InMemoryStudentRepository();
-            var borrowingRepository = new EquipmentBorrowing.Infrastructure.Repositories.InMemoryBorrowingRepository();
-            var borrowEquipmentService = new EquipmentBorrowing.Application.Services.BorrowEquipmentService(studentRepository, equipmentRepository, borrowingRepository);
-            var returnEquipmentService = new EquipmentBorrowing.Application.Services.ReturnEquipmentService(borrowingRepository, equipmentRepository);
+            var services = new ServiceCollection();
+
+            // Repositories: Singleton so in-memory data survives across view switches
+            services.AddSingleton<IEquipmentRepository, InMemoryEquipmentRepository>();
+            services.AddSingleton<IStudentRepository, InMemoryStudentRepository>();
+            services.AddSingleton<IBorrowingRepository, InMemoryBorrowingRepository>();
+
+            // Application services: Transient, stateless
+            services.AddTransient<BorrowEquipmentService>();
+            services.AddTransient<ReturnEquipmentService>();
+
+            // ViewModels
+            services.AddTransient<MainWindowViewModel>();
+
+            var provider = services.BuildServiceProvider();
 
             desktop.MainWindow = new MainWindow
             {
-                DataContext = new MainWindowViewModel(equipmentRepository, studentRepository, borrowingRepository, borrowEquipmentService, returnEquipmentService),
+                DataContext = provider.GetRequiredService<MainWindowViewModel>(),
             };
         }
 
