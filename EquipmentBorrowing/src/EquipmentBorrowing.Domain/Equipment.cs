@@ -11,5 +11,8 @@ public class Equipment
     {
         IsActivelyBorrowed = true;
     }
-
+    public void MarkAsAvailable()
+    {
+        IsActivelyBorrowed = false;
+    }
 }
