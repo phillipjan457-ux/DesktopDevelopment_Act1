@@ -77,6 +77,7 @@ The EquipmentBorrowing.Desktop is responsible for showing data(equipment list, s
 
 ## 6. Updated Architecture
 
+```
 Avalonia View
       │
       │  Binding / Command
@@ -94,6 +95,7 @@ Repository Interface
       ▲
       │
 Infrastructure Implementation
+```
 
 ## 7. Borrow Equipment Flow
 
