@@ -103,7 +103,7 @@ User selects a student and equipment in EquipmentView, clicks "Borrow Equipment"
 
 ## 8. Return Equipment Flow
 
-
+User selects a borrowing in BorrowingsView, clicks "Return Equipment" --> That's bound to BorrowingViewModel.ReturnCommand --> The ViewModel checks presentation-level validity (is a borrowing actually selected?) and if not, sets StatusMessage and stops --> If valid, it calls _returnEquipmentService.ReturnEquipmentAsync(SelectedBorrowing.BorrowId) — control passes from UI to business logic --> ReturnEquipmentService looks up the borrowing record by ID, checks it exists and is still Active (not already returned) --> If valid, it sets the borrowing's status to Returned and calls equipment.MarkAsAvailable() on the associated Equipment, then saves that change via IEquipmentRepository --> It returns a ReturnResult back up to the ViewModel --> The ViewModel sets StatusMessage from the result and reloads the active borrowings list if successful, so the returned item disappears from the list and the equipment shows as available again in the Equipment view.
 
 ## 9. Architectural Reflection
 
