@@ -130,3 +130,17 @@ A single composition root means object creation and lifetime rules (Singleton vs
 **6. If the in-memory repository were replaced by SQLite later, which parts of the current interface should remain largely unchanged?**
 
 IStudentRepository, IEquipmentRepository, IBorrowingRepository (the interfaces themselves) and everything that depends on them — BorrowEquipmentService, ReturnEquipmentService, all the ViewModels will stay exactly the same. Only a new SqliteEquipmentRepository type class in Infrastructure would need to be written, since it implements the same interface contract.
+
+
+## 10. Laboratory Activity 3
+
+Laboratory Activity 3 introduces SQLite persistence using Entity
+Framework Core while preserving the existing application layers.
+
+### Relational Database Design
+
+See [the database design](docs/database-design.md) for the planned
+tables, keys, relationships, constraints, and indexing decisions.
+
+Current milestone: database design documented.
+Database implementation has not started yet.
