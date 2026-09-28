@@ -1,4 +1,4 @@
-# DesktopDevelopment_Act1
+﻿# DesktopDevelopment_Act1
 <!-- Testing -->
 ## 1. Solution Architecture
 
@@ -22,13 +22,13 @@ Contains the automated test project structure (EquipmentBorrowing.Tests), set up
 
 ```
 ConsoleDemo (Executable)
-        │
-        ▼
+        â”‚
+        â–¼
     Application
-        │      ▲
-        ▼      │
-     Domain    │
-               │
+        â”‚      â–²
+        â–¼      â”‚
+     Domain    â”‚
+               â”‚
           Infrastructure
 ```
 - **Application** depends on **Domain** and defines interfaces that **Infrastructure** implements.
@@ -69,7 +69,7 @@ No. A button's click handler should call into the Application layer, which then 
 
 **5. What part of your implementation represents the actual business operation requested by the actor?**
 
-`BorrowEquipmentService.BorrowEquipmentAsync` represents the actual business operation — it enforces all the borrowing rules before creating a `Borrowing` record.
+`BorrowEquipmentService.BorrowEquipmentAsync` represents the actual business operation â€” it enforces all the borrowing rules before creating a `Borrowing` record.
 
 ## 5. Desktop Project
 
@@ -79,31 +79,31 @@ The EquipmentBorrowing.Desktop is responsible for showing data(equipment list, s
 
 ```
 Avalonia View
-      │
-      │  Binding / Command
-      ▼
+      â”‚
+      â”‚  Binding / Command
+      â–¼
   ViewModel
-      │
-      │  Application Operation
-      ▼
+      â”‚
+      â”‚  Application Operation
+      â–¼
 Application Service
-      │
-      ├──────────► Domain
-      │
-      ▼
+      â”‚
+      â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â–º Domain
+      â”‚
+      â–¼
 Repository Interface
-      ▲
-      │
+      â–²
+      â”‚
 Infrastructure Implementation
 ```
 
 ## 7. Borrow Equipment Flow
 
-User selects a student and equipment in EquipmentView, clicks "Borrow Equipment" -->  That's bound to EquipmentViewModel.BorrowCommand --> The ViewModel checks presentation-level validity (is a student/equipment actually selected?) — if not, sets StatusMessage and stops -->  If valid, it calls _borrowEquipmentService.BorrowEquipmentAsync() — this is the moment control passes from UI to business logic --> BorrowEquipmentService runs all business rules (student exists? authorized? equipment exists? available? under borrow limit?) using the repositories --> If all rules pass, it creates a Borrowing domain object, saves it via IBorrowingRepository, marks the Equipment as borrowed via IEquipmentRepository --> It returns a BorrowResult back up to the ViewModel -->  The ViewModel sets StatusMessage from the result and reloads the list if successful, the View updates automatically because of data binding
+User selects a student and equipment in EquipmentView, clicks "Borrow Equipment" -->  That's bound to EquipmentViewModel.BorrowCommand --> The ViewModel checks presentation-level validity (is a student/equipment actually selected?) â€” if not, sets StatusMessage and stops -->  If valid, it calls _borrowEquipmentService.BorrowEquipmentAsync() â€” this is the moment control passes from UI to business logic --> BorrowEquipmentService runs all business rules (student exists? authorized? equipment exists? available? under borrow limit?) using the repositories --> If all rules pass, it creates a Borrowing domain object, saves it via IBorrowingRepository, marks the Equipment as borrowed via IEquipmentRepository --> It returns a BorrowResult back up to the ViewModel -->  The ViewModel sets StatusMessage from the result and reloads the list if successful, the View updates automatically because of data binding
 
 ## 8. Return Equipment Flow
 
-User selects a borrowing in BorrowingsView, clicks "Return Equipment" --> That's bound to BorrowingViewModel.ReturnCommand --> The ViewModel checks presentation-level validity (is a borrowing actually selected?) and if not, sets StatusMessage and stops --> If valid, it calls _returnEquipmentService.ReturnEquipmentAsync(SelectedBorrowing.BorrowId) — control passes from UI to business logic --> ReturnEquipmentService looks up the borrowing record by ID, checks it exists and is still Active (not already returned) --> If valid, it sets the borrowing's status to Returned and calls equipment.MarkAsAvailable() on the associated Equipment, then saves that change via IEquipmentRepository --> It returns a ReturnResult back up to the ViewModel --> The ViewModel sets StatusMessage from the result and reloads the active borrowings list if successful, so the returned item disappears from the list and the equipment shows as available again in the Equipment view.
+User selects a borrowing in BorrowingsView, clicks "Return Equipment" --> That's bound to BorrowingViewModel.ReturnCommand --> The ViewModel checks presentation-level validity (is a borrowing actually selected?) and if not, sets StatusMessage and stops --> If valid, it calls _returnEquipmentService.ReturnEquipmentAsync(SelectedBorrowing.BorrowId) â€” control passes from UI to business logic --> ReturnEquipmentService looks up the borrowing record by ID, checks it exists and is still Active (not already returned) --> If valid, it sets the borrowing's status to Returned and calls equipment.MarkAsAvailable() on the associated Equipment, then saves that change via IEquipmentRepository --> It returns a ReturnResult back up to the ViewModel --> The ViewModel sets StatusMessage from the result and reloads the active borrowings list if successful, so the returned item disappears from the list and the equipment shows as available again in the Equipment view.
 
 ## 9. Architectural Reflection
 
@@ -129,4 +129,18 @@ A single composition root means object creation and lifetime rules (Singleton vs
 
 **6. If the in-memory repository were replaced by SQLite later, which parts of the current interface should remain largely unchanged?**
 
-IStudentRepository, IEquipmentRepository, IBorrowingRepository (the interfaces themselves) and everything that depends on them — BorrowEquipmentService, ReturnEquipmentService, all the ViewModels will stay exactly the same. Only a new SqliteEquipmentRepository type class in Infrastructure would need to be written, since it implements the same interface contract.
+IStudentRepository, IEquipmentRepository, IBorrowingRepository (the interfaces themselves) and everything that depends on them â€” BorrowEquipmentService, ReturnEquipmentService, all the ViewModels will stay exactly the same. Only a new SqliteEquipmentRepository type class in Infrastructure would need to be written, since it implements the same interface contract.
+
+
+## 10. Laboratory Activity 3
+
+Laboratory Activity 3 introduces SQLite persistence using Entity
+Framework Core while preserving the existing application layers.
+
+### Relational Database Design
+
+See [the database design](EquipmentBorrowing/docs/database-design.md) for the planned
+tables, keys, relationships, constraints, and indexing decisions.
+
+Current milestone: database design documented.
+Database implementation has not started yet.
