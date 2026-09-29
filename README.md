@@ -181,6 +181,32 @@ actual return time and stays null for active loans.
 The solution builds successfully, and `dotnet ef dbcontext script`
 successfully generates the schema SQL from the mappings.
 
-The application still uses in-memory repositories. No migration has
-been applied, and database persistence is not connected to the UI yet.
-The SQL examples still need to be executed against the migrated database.
+InitialCreate and SeedInitialData have been applied successfully.
+SQLite Viewer confirmed three students, three available equipment items,
+and two entries in __EFMigrationsHistory. Borrowings is currently empty.
+
+Running database update again reported that the database was already
+up to date, and the seed records remained unchanged.
+
+The application still uses in-memory repositories. Connecting the
+repositories and UI to SQLite is the next stage. The SQL examples
+have not yet been executed against the database.
+
+### Applying the Database Migrations
+
+Run these commands from the repository root:
+
+```powershell
+dotnet tool restore
+dotnet ef database update --project .\EquipmentBorrowing\src\EquipmentBorrowing.Infrastructure --startup-project .\EquipmentBorrowing\src\EquipmentBorrowing.Infrastructure
+```
+
+With the current factory and command, the database is created inside
+EquipmentBorrowing/src/EquipmentBorrowing.Infrastructure.
+
+InitialCreate creates the schema. SeedInitialData inserts the starting
+students and equipment once. EF tracks applied migrations in
+__EFMigrationsHistory.
+
+Migration source files are committed to Git. Local database files are
+excluded through the root .gitignore.
