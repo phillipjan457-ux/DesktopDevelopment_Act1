@@ -129,7 +129,7 @@ A single composition root means object creation and lifetime rules (Singleton vs
 
 **6. If the in-memory repository were replaced by SQLite later, which parts of the current interface should remain largely unchanged?**
 
-IStudentRepository, IEquipmentRepository, IBorrowingRepository (the interfaces themselves) and everything that depends on them — BorrowEquipmentService, ReturnEquipmentService, all the ViewModels will stay exactly the same. Only a new SqliteEquipmentRepository type class in Infrastructure would need to be written, since it implements the same interface contract.
+The Views and ViewModels should remain largely unchanged because they use application services and repository interfaces. Infrastructure will provide EF Core repository implementations. Small changes may still be needed in the domain and services to store relationship IDs, record actual return times, and save related changes together.
 
 
 ## 10. Laboratory Activity 3
@@ -159,7 +159,28 @@ contains examples of:
 The queries match the planned schema. They will be tested against
 SQLite after the initial EF Core migration is applied.
 
-### Progress
 
-Database design, diagram, and SQL examples are documented.
-EF Core implementation and database verification have not started yet.
+### EF Core Setup
+
+Infrastructure uses EF Core SQLite and Design packages version 10.0.12.
+
+EquipmentBorrowingDbContext exposes Students, Equipment, and Borrowings.
+Separate configuration classes define their keys, required fields,
+relationships, check constraints, and indexes.
+
+A design-time factory lets EF commands create the context without
+launching Avalonia. The repository's dotnet-tools.json records the
+EF tool version. Run `dotnet tool restore` after cloning or pulling it.
+
+Borrowing now includes StudentId and EquipmentId as explicit foreign
+keys. ReturnDate remains the due date, while ReturnedAt records the
+actual return time and stays null for active loans.
+
+### Verification and Progress
+
+The solution builds successfully, and `dotnet ef dbcontext script`
+successfully generates the schema SQL from the mappings.
+
+The application still uses in-memory repositories. No migration has
+been applied, and database persistence is not connected to the UI yet.
+The SQL examples still need to be executed against the migrated database.

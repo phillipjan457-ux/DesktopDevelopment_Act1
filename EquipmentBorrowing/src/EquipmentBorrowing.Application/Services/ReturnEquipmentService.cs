@@ -37,6 +37,7 @@ public class ReturnEquipmentService
         }
 
         borrowing.Status = BorrowingStatus.Returned;
+        borrowing.ReturnedAt = DateTime.UtcNow;
 
         borrowing.Equipment.MarkAsAvailable();
         await _equipmentRepository.SaveEquipmentAsync(borrowing.Equipment, cancellationToken);

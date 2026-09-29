@@ -73,14 +73,17 @@ public class BorrowEquipmentService
             };
         }
 
+        var borrowDate = DateTime.UtcNow;
+
         var borrowing = new Borrowing
         {
             BorrowId = Guid.NewGuid().ToString(),
+            StudentId = student.StudentId,
             Student = student,
+            EquipmentId = equipment.EquipmentId,
             Equipment = equipment,
-            BorrowDate = DateTime.UtcNow,
-            ReturnDate = DateTime.UtcNow.AddDays(14),
-    
+            BorrowDate = borrowDate,
+            ReturnDate = borrowDate.AddDays(14)
         };
         await _borrowingRepository.SaveBorrowing(borrowing, cancellationtoken);
         equipment.MarkAsBorrowed();
