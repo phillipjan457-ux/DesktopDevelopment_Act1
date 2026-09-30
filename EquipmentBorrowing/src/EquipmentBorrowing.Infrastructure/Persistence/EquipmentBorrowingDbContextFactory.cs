@@ -9,7 +9,7 @@ public class EquipmentBorrowingDbContextFactory
     public EquipmentBorrowingDbContext CreateDbContext(string[] args)
     {
         var options = new DbContextOptionsBuilder<EquipmentBorrowingDbContext>()
-            .UseSqlite("Data Source=equipment-borrowing.db")
+            .UseSqlite(EquipmentDatabase.GetConnectionString())
             .Options;
 
         return new EquipmentBorrowingDbContext(options);

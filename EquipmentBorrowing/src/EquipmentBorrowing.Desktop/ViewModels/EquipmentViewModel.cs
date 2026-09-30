@@ -1,18 +1,16 @@
+using System;
+using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using EquipmentBorrowing.Application.Interfaces;
-using EquipmentBorrowing.Application.Services;
 using EquipmentBorrowing.Domain;
-using System.Collections.ObjectModel;
-using System.Threading.Tasks;
 
 namespace EquipmentBorrowing.Desktop.ViewModels;
 
 public partial class EquipmentViewModel : ViewModelBase
 {
-    private readonly IEquipmentRepository _equipmentRepository;
-    private readonly IStudentRepository _studentRepository;
-    private readonly BorrowEquipmentService _borrowEquipmentService;
+    private readonly IEquipmentBorrowingOperations _operations;
 
     [ObservableProperty]
     private ObservableCollection<Equipment> equipmentList = new();
@@ -29,24 +27,26 @@ public partial class EquipmentViewModel : ViewModelBase
     [ObservableProperty]
     private string? statusMessage;
 
-    public EquipmentViewModel(
-        IEquipmentRepository equipmentRepository,
-        IStudentRepository studentRepository,
-        BorrowEquipmentService borrowEquipmentService)
+    public EquipmentViewModel(IEquipmentBorrowingOperations operations)
     {
-        _equipmentRepository = equipmentRepository;
-        _studentRepository = studentRepository;
-        _borrowEquipmentService = borrowEquipmentService;
+        _operations = operations;
         _ = LoadDataAsync();
     }
 
     private async Task LoadDataAsync()
     {
-        var equipment = await _equipmentRepository.GetAllEquipmentAsync();
-        EquipmentList = new ObservableCollection<Equipment>(equipment);
+        try
+        {
+            var equipment = await _operations.GetEquipmentAsync();
+            var students = await _operations.GetStudentsAsync();
 
-        var students = await _studentRepository.GetAllStudentsAsync();
-        StudentList = new ObservableCollection<Student>(students);
+            EquipmentList = new ObservableCollection<Equipment>(equipment);
+            StudentList = new ObservableCollection<Student>(students);
+        }
+        catch (Exception)
+        {
+            StatusMessage = "Could not load equipment and students. Please reopen this section to retry.";
+        }
     }
 
     [RelayCommand]
@@ -64,15 +64,22 @@ public partial class EquipmentViewModel : ViewModelBase
             return;
         }
 
-        var result = await _borrowEquipmentService.BorrowEquipmentAsync(
-            SelectedStudent.StudentId,
-            SelectedEquipment.EquipmentId);
-
-        StatusMessage = result.Message;
-
-        if (result.IsSuccess)
+        try
         {
-            await LoadDataAsync();
+            var result = await _operations.BorrowAsync(
+                SelectedStudent.StudentId,
+                SelectedEquipment.EquipmentId);
+
+            StatusMessage = result.Message;
+
+            if (result.IsSuccess)
+            {
+                await LoadDataAsync();
+            }
+        }
+        catch (Exception)
+        {
+            StatusMessage = "Could not complete the borrowing. Reload the equipment list before retrying.";
         }
     }
 }

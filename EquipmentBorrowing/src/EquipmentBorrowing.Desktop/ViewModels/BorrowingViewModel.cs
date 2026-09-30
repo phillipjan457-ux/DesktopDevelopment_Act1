@@ -1,17 +1,16 @@
+using System;
+using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using EquipmentBorrowing.Application.Interfaces;
-using EquipmentBorrowing.Application.Services;
 using EquipmentBorrowing.Domain;
-using System.Collections.ObjectModel;
-using System.Threading.Tasks;
 
 namespace EquipmentBorrowing.Desktop.ViewModels;
 
 public partial class BorrowingsViewModel : ViewModelBase
 {
-    private readonly IBorrowingRepository _borrowingRepository;
-    private readonly ReturnEquipmentService _returnEquipmentService;
+    private readonly IEquipmentBorrowingOperations _operations;
 
     [ObservableProperty]
     private ObservableCollection<Borrowing> activeBorrowings = new();
@@ -22,19 +21,25 @@ public partial class BorrowingsViewModel : ViewModelBase
     [ObservableProperty]
     private string? statusMessage;
 
-    public BorrowingsViewModel(
-        IBorrowingRepository borrowingRepository,
-        ReturnEquipmentService returnEquipmentService)
+    public BorrowingsViewModel(IEquipmentBorrowingOperations operations)
     {
-        _borrowingRepository = borrowingRepository;
-        _returnEquipmentService = returnEquipmentService;
+        _operations = operations;
         _ = LoadDataAsync();
     }
 
     private async Task LoadDataAsync()
     {
-        var borrowings = await _borrowingRepository.ListActiveBorrowings();
-        ActiveBorrowings = new ObservableCollection<Borrowing>(borrowings);
+        try
+        {
+            var borrowings = await _operations.GetActiveBorrowingsAsync();
+
+            ActiveBorrowings =
+                new ObservableCollection<Borrowing>(borrowings);
+        }
+        catch (Exception)
+        {
+            StatusMessage = "Could not load borrowings. Please reopen this section to retry.";
+        }
     }
 
     [RelayCommand]
@@ -46,13 +51,21 @@ public partial class BorrowingsViewModel : ViewModelBase
             return;
         }
 
-        var result = await _returnEquipmentService.ReturnEquipmentAsync(SelectedBorrowing.BorrowId);
-
-        StatusMessage = result.Message;
-
-        if (result.IsSuccess)
+        try
         {
-            await LoadDataAsync();
+            var result = await _operations.ReturnAsync(
+                SelectedBorrowing.BorrowId);
+
+            StatusMessage = result.Message;
+
+            if (result.IsSuccess)
+            {
+                await LoadDataAsync();
+            }
+        }
+        catch (Exception)
+        {
+            StatusMessage = "Could not complete the return. Reload the borrowings list before retrying.";
         }
     }
 }
