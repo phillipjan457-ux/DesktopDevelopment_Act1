@@ -189,8 +189,8 @@ Running database update again reported that the database was already
 up to date, and the seed records remained unchanged.
 
 EF repositories and a shared unit of work are implemented and tested.
-The desktop application still uses in-memory repositories; connecting
-the UI to SQLite is the next stage. The SQL examples have not yet been executed against the database.
+The desktop application now uses EF Core repositories and SQLite.
+The console demo continues to use in-memory repositories. The SQL examples have not yet been executed against the database.
 
 ### Applying the Database Migrations
 
@@ -201,8 +201,12 @@ dotnet tool restore
 dotnet ef database update --project .\EquipmentBorrowing\src\EquipmentBorrowing.Infrastructure --startup-project .\EquipmentBorrowing\src\EquipmentBorrowing.Infrastructure
 ```
 
-With the current factory and command, the database is created inside
-EquipmentBorrowing/src/EquipmentBorrowing.Infrastructure.
+The desktop application and EF migration commands use the same database:
+%LOCALAPPDATA%\EquipmentBorrowing\equipment-borrowing.db.
+
+EquipmentDatabase builds this absolute path independently of the working
+directory. Run the database update command before first launching the app.
+The earlier database inside Infrastructure is no longer used by this setup.
 
 InitialCreate creates the schema. SeedInitialData inserts the starting
 students and equipment once. EF tracks applied migrations in
@@ -225,13 +229,36 @@ IUnitOfWork.SaveChangesAsync after preparing the complete operation.
 With EfUnitOfWork and a shared DbContext, the borrowing record and
 equipment availability are saved together.
 
-InMemoryUnitOfWork keeps the existing desktop and console demos working
-while they still use in-memory repositories.
+InMemoryUnitOfWork supports the console demo, which continues to use
+in-memory repositories. The desktop now uses EfUnitOfWork.
 
 Validation: BorrowAndReturn_SaveChangesAcrossContexts passed using a
 temporary SQLite database. It applied the migrations, borrowed equipment,
 verified the saved values through a new context, returned the equipment,
 and verified the returned status and availability through another context.
 
-Desktop restart persistence and database failure rollback have not yet
-been tested.
+Desktop restart persistence has been verified for borrowing and returning.
+Database failure rollback has not yet been tested.
+
+### Desktop SQLite Integration
+
+The view models use IEquipmentBorrowingOperations to load students,
+equipment, and active borrowings, and to request borrowing and returning.
+
+ScopedEquipmentBorrowingOperations creates and disposes a dependency
+injection scope for each operation. The EF repositories and unit of work
+within that scope share one DbContext.
+
+The desktop registers EF repositories and EfUnitOfWork as scoped services.
+View models display a status message when loading or an operation fails.
+
+Manual verification:
+- The desktop loaded the three seeded students and equipment items.
+- John Doe borrowed the Laptop successfully.
+- After closing and reopening the app, the borrowing remained active.
+- The Laptop was returned successfully.
+- After another restart, Active Borrowings was empty and the Laptop
+  displayed Borrowed: False.
+
+The solution build passed. The SQL examples have not yet been executed
+against the database.
