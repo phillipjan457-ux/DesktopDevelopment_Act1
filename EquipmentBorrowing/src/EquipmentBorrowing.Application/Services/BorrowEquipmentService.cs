@@ -7,12 +7,18 @@ public class BorrowEquipmentService
     private readonly IStudentRepository _studentRepository;
     private readonly IEquipmentRepository _equipmentRepository;
     private readonly IBorrowingRepository _borrowingRepository;
+    private readonly IUnitOfWork _unitOfWork;
     private const int MaxBorrowLimit = 5;
-    public BorrowEquipmentService(IStudentRepository studentRepository, IEquipmentRepository equipmentRepository, IBorrowingRepository borrowingRepository)
+    public BorrowEquipmentService(
+    IStudentRepository studentRepository,
+    IEquipmentRepository equipmentRepository,
+    IBorrowingRepository borrowingRepository,
+    IUnitOfWork unitOfWork)
     {
         _studentRepository = studentRepository;
         _equipmentRepository = equipmentRepository;
         _borrowingRepository = borrowingRepository;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<BorrowResult> BorrowEquipmentAsync(string studentId, string equipmentId, CancellationToken cancellationtoken = default)
@@ -88,6 +94,7 @@ public class BorrowEquipmentService
         await _borrowingRepository.SaveBorrowing(borrowing, cancellationtoken);
         equipment.MarkAsBorrowed();
         await _equipmentRepository.SaveEquipmentAsync(equipment, cancellationtoken);
+        await _unitOfWork.SaveChangesAsync(cancellationtoken);
         return new BorrowResult
         {
             IsSuccess = true,

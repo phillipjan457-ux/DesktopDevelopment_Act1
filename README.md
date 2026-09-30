@@ -188,9 +188,9 @@ and two entries in __EFMigrationsHistory. Borrowings is currently empty.
 Running database update again reported that the database was already
 up to date, and the seed records remained unchanged.
 
-The application still uses in-memory repositories. Connecting the
-repositories and UI to SQLite is the next stage. The SQL examples
-have not yet been executed against the database.
+EF repositories and a shared unit of work are implemented and tested.
+The desktop application still uses in-memory repositories; connecting
+the UI to SQLite is the next stage. The SQL examples have not yet been executed against the database.
 
 ### Applying the Database Migrations
 
@@ -210,3 +210,28 @@ __EFMigrationsHistory.
 
 Migration source files are committed to Git. Local database files are
 excluded through the root .gitignore.
+
+### EF Repositories and Unit of Work
+
+EfStudentRepository, EfEquipmentRepository, and EfBorrowingRepository
+implement the existing repository interfaces using EF Core.
+
+Display queries use AsNoTracking. Lookups used for borrowing and
+returning use tracking so EF can detect changes. Borrowing queries
+include the related student and equipment for displaying their names.
+
+Repository save methods prepare changes. The application services call
+IUnitOfWork.SaveChangesAsync after preparing the complete operation.
+With EfUnitOfWork and a shared DbContext, the borrowing record and
+equipment availability are saved together.
+
+InMemoryUnitOfWork keeps the existing desktop and console demos working
+while they still use in-memory repositories.
+
+Validation: BorrowAndReturn_SaveChangesAcrossContexts passed using a
+temporary SQLite database. It applied the migrations, borrowed equipment,
+verified the saved values through a new context, returned the equipment,
+and verified the returned status and availability through another context.
+
+Desktop restart persistence and database failure rollback have not yet
+been tested.

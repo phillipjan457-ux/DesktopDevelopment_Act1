@@ -27,6 +27,7 @@ public partial class App : Avalonia.Application
             services.AddSingleton<IEquipmentRepository, InMemoryEquipmentRepository>();
             services.AddSingleton<IStudentRepository, InMemoryStudentRepository>();
             services.AddSingleton<IBorrowingRepository, InMemoryBorrowingRepository>();
+            services.AddSingleton<IUnitOfWork, InMemoryUnitOfWork>();
 
             // Application services: Transient, stateless
             services.AddTransient<BorrowEquipmentService>();
