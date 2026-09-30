@@ -6,8 +6,13 @@ var equipmentRepository = new InMemoryEquipmentRepository();
 var borrowingRepository = new InMemoryBorrowingRepository();
 
 
-var service = new BorrowEquipmentService(studentRepository, equipmentRepository, borrowingRepository);
-Console.WriteLine("=== Successful Borrow Test ===");
+var unitOfWork = new InMemoryUnitOfWork();
+
+var service = new BorrowEquipmentService(
+    studentRepository,
+    equipmentRepository,
+    borrowingRepository,
+    unitOfWork); Console.WriteLine("=== Successful Borrow Test ===");
 var result = await service.BorrowEquipmentAsync("1", "1");
 Console.WriteLine($"Success: {result.IsSuccess}, Message: {result.Message}");
 

@@ -7,11 +7,15 @@ public class ReturnEquipmentService
 {
     private readonly IBorrowingRepository _borrowingRepository;
     private readonly IEquipmentRepository _equipmentRepository;
-
-    public ReturnEquipmentService(IBorrowingRepository borrowingRepository, IEquipmentRepository equipmentRepository)
+    private readonly IUnitOfWork _unitOfWork;
+    public ReturnEquipmentService(
+    IBorrowingRepository borrowingRepository,
+    IEquipmentRepository equipmentRepository,
+    IUnitOfWork unitOfWork)
     {
         _borrowingRepository = borrowingRepository;
         _equipmentRepository = equipmentRepository;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<ReturnResult> ReturnEquipmentAsync(string borrowId, CancellationToken cancellationToken = default)
@@ -41,6 +45,7 @@ public class ReturnEquipmentService
 
         borrowing.Equipment.MarkAsAvailable();
         await _equipmentRepository.SaveEquipmentAsync(borrowing.Equipment, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return new ReturnResult
         {
