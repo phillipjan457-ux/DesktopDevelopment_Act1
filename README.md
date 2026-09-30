@@ -1,4 +1,4 @@
-﻿# DesktopDevelopment_Act1
+# DesktopDevelopment_Act1
 <!-- Testing -->
 ## 1. Solution Architecture
 
@@ -20,16 +20,12 @@ Contains the automated test project structure (EquipmentBorrowing.Tests), set up
 
 ## 2. Dependency Direction
 
-```
-ConsoleDemo (Executable)
-        â”‚
-        â–¼
-    Application
-        â”‚      â–²
-        â–¼      â”‚
-     Domain    â”‚
-               â”‚
-          Infrastructure
+```text
+ConsoleDemo --> Application
+ConsoleDemo --> Infrastructure
+Application --> Domain
+Infrastructure --> Application
+Infrastructure --> Domain
 ```
 - **Application** depends on **Domain** and defines interfaces that **Infrastructure** implements.
 - **Infrastructure** depends on both **Domain** and **Application** (to implement its repository interfaces).
@@ -77,24 +73,28 @@ The EquipmentBorrowing.Desktop is responsible for showing data(equipment list, s
 
 ## 6. Updated Architecture
 
-```
+```text
 Avalonia View
-      â”‚
-      â”‚  Binding / Command
-      â–¼
-  ViewModel
-      â”‚
-      â”‚  Application Operation
-      â–¼
-Application Service
-      â”‚
-      â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â–º Domain
-      â”‚
-      â–¼
+    |
+    | Binding / Command
+    v
+ViewModel
+    |
+    | IEquipmentBorrowingOperations
+    v
+ScopedEquipmentBorrowingOperations
+    |
+    v
+Application Service --> Domain
+    |
+    v
 Repository Interface
-      â–²
-      â”‚
-Infrastructure Implementation
+    ^
+    |
+EF Repository Implementation
+    |
+    v
+SQLite Database
 ```
 
 ## 7. Borrow Equipment Flow
