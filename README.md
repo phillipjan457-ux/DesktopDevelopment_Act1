@@ -260,11 +260,53 @@ Manual verification:
 - After another restart, Active Borrowings was empty and the Laptop
   displayed Borrowed: False.
 
-The solution build passed. The SQL examples have not yet been executed
-against the database.
-
+The solution build passed. All five SQL examples were executed successfully
+against the application's SQLite database using DB Browser for SQLite.
+The queries verified equipment retrieval, available-equipment filtering,
+active borrowings with joins, and active borrowing counts per student.
+The update example temporarily renamed Laptop to Laptop 01; a separate
+query confirmed that ROLLBACK restored the original name.
 ### LINQ and Generated SQL
 
 See [LINQ queries and generated SQL](EquipmentBorrowing/docs/linq-and-generated-sql.md)
 for three query examples, two captured SQL statements, and the
 tracking explanation.
+
+### Persistence Verification
+
+See [Persistence verification](EquipmentBorrowing/docs/persistence-verification.md)
+for applied migrations, stored borrowing history, and screenshots confirming
+that borrowing and returning equipment persist after restarting the application.
+
+### Architectural Reflection
+
+1. **Why was a complete rewrite unnecessary?**
+   The application already used repository interfaces. EF Core implementations
+   replaced the in-memory repositories while preserving the existing Views,
+   ViewModels, and borrowing rules.
+
+2. **Why should ViewModels not use DbContext directly?**
+   ViewModels manage presentation state and user actions. Keeping database
+   access behind abstractions separates UI concerns from persistence and
+   makes the code easier to test and maintain.
+
+3. **What do repository implementations now do?**
+   They retrieve and update entities through EF Core. The unit of work saves
+   the changes made during an operation using the shared DbContext.
+
+4. **What is the purpose of a migration?**
+   A migration records database changes in version-controlled code so the
+   schema can be created and updated consistently.
+
+5. **Why are foreign keys important?**
+   They ensure each borrowing references an existing student and equipment
+   record, preventing invalid relationships.
+
+6. **Why use AsNoTracking for read-only queries?**
+   It avoids change-tracking overhead when entities are only displayed.
+   Entities that will be modified are retrieved using tracking queries.
+
+7. **What would change with another database provider?**
+   Provider configuration, migrations, and provider-specific mappings or
+   queries would need review. The Views, ViewModels, and application services
+   could largely remain unchanged because they depend on abstractions.
