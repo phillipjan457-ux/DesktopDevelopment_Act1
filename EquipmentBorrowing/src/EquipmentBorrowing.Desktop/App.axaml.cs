@@ -10,6 +10,8 @@ using EquipmentBorrowing.Infrastructure.Persistence;
 using EquipmentBorrowing.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using System.Diagnostics;
+using Microsoft.Extensions.Logging;
 
 namespace EquipmentBorrowing.Desktop;
 
@@ -28,7 +30,16 @@ public partial class App : Avalonia.Application
 
             // One context shared by the services within each operation.
             services.AddDbContext<EquipmentBorrowingDbContext>(options =>
-                options.UseSqlite(EquipmentDatabase.GetConnectionString()));
+            {
+                options.UseSqlite(EquipmentDatabase.GetConnectionString());
+
+#if DEBUG
+                options.LogTo(
+                    message => Debug.WriteLine(message),
+                    new[] { DbLoggerCategory.Database.Command.Name },
+                    LogLevel.Information);
+#endif
+            });
 
             services.AddScoped<IStudentRepository, EfStudentRepository>();
             services.AddScoped<IEquipmentRepository, EfEquipmentRepository>();

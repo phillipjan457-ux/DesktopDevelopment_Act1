@@ -29,4 +29,17 @@ public class InMemoryEquipmentRepository : IEquipmentRepository
     {
         return Task.FromResult(_equipment.Values.AsEnumerable());
     }
+    public Task<IEnumerable<Equipment>> GetAvailableEquipmentAsync(
+    CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        IEnumerable<Equipment> equipment = _equipment.Values
+            .Where(item => !item.IsActivelyBorrowed)
+            .OrderBy(item => item.Name)
+            .ThenBy(item => item.EquipmentId)
+            .ToList();
+
+        return Task.FromResult(equipment);
+    }
 }

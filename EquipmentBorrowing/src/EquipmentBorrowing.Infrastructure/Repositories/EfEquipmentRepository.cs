@@ -13,7 +13,16 @@ public class EfEquipmentRepository : IEquipmentRepository
     {
         _context = context;
     }
-
+    public async Task<IEnumerable<Equipment>> GetAvailableEquipmentAsync(
+    CancellationToken cancellationToken = default)
+    {
+        return await _context.Equipment
+            .AsNoTracking()
+            .Where(equipment => !equipment.IsActivelyBorrowed)
+            .OrderBy(equipment => equipment.Name)
+            .ThenBy(equipment => equipment.EquipmentId)
+            .ToListAsync(cancellationToken);
+    }
     public async Task<Equipment?> GetEquipmentByIdAsync(
         string equipmentId,
         CancellationToken cancellationToken = default)
