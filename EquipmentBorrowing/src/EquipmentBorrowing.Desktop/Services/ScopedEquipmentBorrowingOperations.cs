@@ -39,7 +39,7 @@ public sealed class ScopedEquipmentBorrowingOperations
         var repository = scope.ServiceProvider
             .GetRequiredService<IEquipmentRepository>();
 
-        return await repository.GetAllEquipmentAsync(cancellationToken);
+        return await repository.GetAvailableEquipmentAsync(cancellationToken);
     }
 
     public async Task<IEnumerable<Borrowing>> GetActiveBorrowingsAsync(

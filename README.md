@@ -1,4 +1,4 @@
-# DesktopDevelopment_Act1
+﻿# DesktopDevelopment_Act1
 <!-- Testing -->
 ## 1. Solution Architecture
 
@@ -262,3 +262,9 @@ Manual verification:
 
 The solution build passed. The SQL examples have not yet been executed
 against the database.
+
+### LINQ and Generated SQL
+
+See [LINQ queries and generated SQL](EquipmentBorrowing/docs/linq-and-generated-sql.md)
+for three query examples, two captured SQL statements, and the
+tracking explanation.
