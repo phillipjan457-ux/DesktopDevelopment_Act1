@@ -5,45 +5,50 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
 namespace EquipmentBorrowing.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(EquipmentBorrowingDbContext))]
-    [Migration("20260929151438_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20261116143236_InitialPostgres")]
+    partial class InitialPostgres
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "10.0.12");
+            modelBuilder
+                .HasAnnotation("ProductVersion", "10.0.12")
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
+
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("EquipmentBorrowing.Domain.Borrowing", b =>
                 {
                     b.Property<string>("BorrowId")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("BorrowDate")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("EquipmentId")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("ReturnDate")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime?>("ReturnedAt")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("Status")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
 
                     b.Property<string>("StudentId")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.HasKey("BorrowId");
 
@@ -55,79 +60,79 @@ namespace EquipmentBorrowing.Infrastructure.Persistence.Migrations
 
                     b.HasIndex(new[] { "EquipmentId" }, "UX_Borrowings_EquipmentId_Active")
                         .IsUnique()
-                        .HasFilter("Status = 0");
+                        .HasFilter("\"Status\" = 0");
 
                     b.ToTable("Borrowings", null, t =>
                         {
-                            t.HasCheckConstraint("CK_Borrowings_BorrowId_NotBlank", "length(trim(BorrowId)) > 0");
+                            t.HasCheckConstraint("CK_Borrowings_BorrowId_NotBlank", "length(trim(\"BorrowId\")) > 0");
 
-                            t.HasCheckConstraint("CK_Borrowings_ReturnDate", "ReturnDate > BorrowDate");
+                            t.HasCheckConstraint("CK_Borrowings_ReturnDate", "\"ReturnDate\" > \"BorrowDate\"");
 
-                            t.HasCheckConstraint("CK_Borrowings_ReturnedAt", "ReturnedAt IS NULL OR ReturnedAt >= BorrowDate");
+                            t.HasCheckConstraint("CK_Borrowings_ReturnedAt", "\"ReturnedAt\" IS NULL OR \"ReturnedAt\" >= \"BorrowDate\"");
 
-                            t.HasCheckConstraint("CK_Borrowings_Status", "Status IN (0, 1)");
+                            t.HasCheckConstraint("CK_Borrowings_Status", "\"Status\" IN (0, 1)");
 
-                            t.HasCheckConstraint("CK_Borrowings_Status_ReturnedAt", "(Status = 0 AND ReturnedAt IS NULL) OR (Status = 1 AND ReturnedAt IS NOT NULL)");
+                            t.HasCheckConstraint("CK_Borrowings_Status_ReturnedAt", "(\"Status\" = 0 AND \"ReturnedAt\" IS NULL) OR (\"Status\" = 1 AND \"ReturnedAt\" IS NOT NULL)");
                         });
                 });
 
             modelBuilder.Entity("EquipmentBorrowing.Domain.Equipment", b =>
                 {
                     b.Property<string>("EquipmentId")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
 
                     b.Property<bool>("IsActivelyBorrowed")
-                        .HasColumnType("INTEGER");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.HasKey("EquipmentId");
 
                     b.ToTable("Equipment", null, t =>
                         {
-                            t.HasCheckConstraint("CK_Equipment_EquipmentId_NotBlank", "length(trim(EquipmentId)) > 0");
+                            t.HasCheckConstraint("CK_Equipment_EquipmentId_NotBlank", "length(trim(\"EquipmentId\")) > 0");
 
-                            t.HasCheckConstraint("CK_Equipment_IsActivelyBorrowed", "IsActivelyBorrowed IN (0, 1)");
-
-                            t.HasCheckConstraint("CK_Equipment_Name_NotBlank", "length(trim(Name)) > 0");
-
-                            t.HasCheckConstraint("CK_Equipment_Type_NotBlank", "length(trim(Type)) > 0");
+                            t.HasCheckConstraint("CK_Equipment_Name_NotBlank", "length(trim(\"Name\")) > 0");
                         });
                 });
 
             modelBuilder.Entity("EquipmentBorrowing.Domain.Student", b =>
                 {
                     b.Property<string>("StudentId")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
+
+                    b.Property<string>("Contact")
+                        .HasColumnType("text");
 
                     b.Property<bool>("IsAuthorized")
-                        .HasColumnType("INTEGER");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true);
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<string>("Program")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.HasKey("StudentId");
 
                     b.ToTable("Students", null, t =>
                         {
-                            t.HasCheckConstraint("CK_Students_IsAuthorized", "IsAuthorized IN (0, 1)");
+                            t.HasCheckConstraint("CK_Students_Name_NotBlank", "length(trim(\"Name\")) > 0");
 
-                            t.HasCheckConstraint("CK_Students_Name_NotBlank", "length(trim(Name)) > 0");
-
-                            t.HasCheckConstraint("CK_Students_Program_NotBlank", "length(trim(Program)) > 0");
-
-                            t.HasCheckConstraint("CK_Students_StudentId_NotBlank", "length(trim(StudentId)) > 0");
+                            t.HasCheckConstraint("CK_Students_StudentId_NotBlank", "length(trim(\"StudentId\")) > 0");
                         });
                 });
 

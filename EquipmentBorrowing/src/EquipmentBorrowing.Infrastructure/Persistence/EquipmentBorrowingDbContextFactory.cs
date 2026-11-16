@@ -8,8 +8,13 @@ public class EquipmentBorrowingDbContextFactory
 {
     public EquipmentBorrowingDbContext CreateDbContext(string[] args)
     {
+        var connectionString =
+            Environment.GetEnvironmentVariable("EQUIPMENT_BORROWING_CONNECTION")
+            ?? throw new InvalidOperationException(
+                "Set the EQUIPMENT_BORROWING_CONNECTION environment variable.");
+
         var options = new DbContextOptionsBuilder<EquipmentBorrowingDbContext>()
-            .UseSqlite(EquipmentDatabase.GetConnectionString())
+            .UseNpgsql(connectionString)
             .Options;
 
         return new EquipmentBorrowingDbContext(options);

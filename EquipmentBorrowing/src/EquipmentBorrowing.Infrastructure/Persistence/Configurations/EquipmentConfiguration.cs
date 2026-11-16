@@ -12,19 +12,11 @@ public class EquipmentConfiguration : IEntityTypeConfiguration<Equipment>
         {
             table.HasCheckConstraint(
                 "CK_Equipment_EquipmentId_NotBlank",
-                "length(trim(EquipmentId)) > 0");
+                "length(trim(\"EquipmentId\")) > 0");
 
             table.HasCheckConstraint(
                 "CK_Equipment_Name_NotBlank",
-                "length(trim(Name)) > 0");
-
-            table.HasCheckConstraint(
-                "CK_Equipment_Type_NotBlank",
-                "length(trim(Type)) > 0");
-
-            table.HasCheckConstraint(
-                "CK_Equipment_IsActivelyBorrowed",
-                "IsActivelyBorrowed IN (0, 1)");
+                "length(trim(\"Name\")) > 0");
         });
 
         builder.HasKey(equipment => equipment.EquipmentId);
@@ -37,9 +29,13 @@ public class EquipmentConfiguration : IEntityTypeConfiguration<Equipment>
             .IsRequired();
 
         builder.Property(equipment => equipment.Type)
-            .IsRequired();
+            .IsRequired(false);
+
+        builder.Property(equipment => equipment.Description)
+            .IsRequired(false);
 
         builder.Property(equipment => equipment.IsActivelyBorrowed)
-            .IsRequired();
+            .IsRequired()
+            .HasDefaultValue(false);
     }
 }

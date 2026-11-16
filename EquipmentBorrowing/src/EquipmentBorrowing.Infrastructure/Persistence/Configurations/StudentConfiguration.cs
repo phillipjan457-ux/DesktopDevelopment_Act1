@@ -12,19 +12,11 @@ public class StudentConfiguration : IEntityTypeConfiguration<Student>
         {
             table.HasCheckConstraint(
                 "CK_Students_StudentId_NotBlank",
-                "length(trim(StudentId)) > 0");
+                "length(trim(\"StudentId\")) > 0");
 
             table.HasCheckConstraint(
                 "CK_Students_Name_NotBlank",
-                "length(trim(Name)) > 0");
-
-            table.HasCheckConstraint(
-                "CK_Students_Program_NotBlank",
-                "length(trim(Program)) > 0");
-
-            table.HasCheckConstraint(
-                "CK_Students_IsAuthorized",
-                "IsAuthorized IN (0, 1)");
+                "length(trim(\"Name\")) > 0");
         });
 
         builder.HasKey(student => student.StudentId);
@@ -37,9 +29,13 @@ public class StudentConfiguration : IEntityTypeConfiguration<Student>
             .IsRequired();
 
         builder.Property(student => student.Program)
-            .IsRequired();
+            .IsRequired(false);
+
+        builder.Property(student => student.Contact)
+            .IsRequired(false);
 
         builder.Property(student => student.IsAuthorized)
-            .IsRequired();
+            .IsRequired()
+            .HasDefaultValue(true);
     }
 }
