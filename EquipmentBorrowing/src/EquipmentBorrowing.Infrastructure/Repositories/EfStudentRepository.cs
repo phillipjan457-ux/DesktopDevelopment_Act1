@@ -40,4 +40,12 @@ public class EfStudentRepository : IStudentRepository
             .ThenBy(student => student.StudentId)
             .ToListAsync(cancellationToken);
     }
+    public Task SaveStudentAsync(
+    Student student,
+    CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        _context.Students.Update(student);
+        return Task.CompletedTask;
+    }
 }

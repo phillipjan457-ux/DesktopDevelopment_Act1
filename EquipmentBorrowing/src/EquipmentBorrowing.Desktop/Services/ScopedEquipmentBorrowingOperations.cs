@@ -134,4 +134,23 @@ public sealed class ScopedEquipmentBorrowingOperations
             description,
             cancellationToken);
     }
+    public async Task<StudentUpdateResult> UpdateStudentAsync(
+    string studentId,
+    string name,
+    string? program,
+    string? contact,
+    CancellationToken cancellationToken = default)
+    {
+        await using var scope = _scopeFactory.CreateAsyncScope();
+
+        var service = scope.ServiceProvider
+            .GetRequiredService<UpdateStudentService>();
+
+        return await service.UpdateAsync(
+            studentId,
+            name,
+            program,
+            contact,
+            cancellationToken);
+    }
 }

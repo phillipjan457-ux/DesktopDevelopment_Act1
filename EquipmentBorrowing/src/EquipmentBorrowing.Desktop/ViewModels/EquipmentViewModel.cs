@@ -49,11 +49,31 @@ public partial class EquipmentViewModel : ViewModelBase
     [ObservableProperty]
     private string equipmentUpdateDescriptionInput = string.Empty;
 
+    [ObservableProperty]
+    private Student? selectedStudentForUpdate;
+
+    [ObservableProperty]
+    private string studentUpdateNameInput = string.Empty;
+
+    [ObservableProperty]
+    private string studentUpdateProgramInput = string.Empty;
+
+    [ObservableProperty]
+    private string studentUpdateContactInput = string.Empty;
+
     partial void OnSelectedEquipmentChanged(Equipment? value)
     {
         EquipmentUpdateNameInput = value?.Name ?? string.Empty;
         EquipmentUpdateDescriptionInput = value?.Description ?? string.Empty;
     }
+
+    partial void OnSelectedStudentForUpdateChanged(Student? value)
+    {
+        StudentUpdateNameInput = value?.Name ?? string.Empty;
+        StudentUpdateProgramInput = value?.Program ?? string.Empty;
+        StudentUpdateContactInput = value?.Contact ?? string.Empty;
+    }
+
     public EquipmentViewModel(IEquipmentBorrowingOperations operations)
     {
         _operations = operations;
@@ -73,6 +93,42 @@ public partial class EquipmentViewModel : ViewModelBase
         catch (Exception)
         {
             StatusMessage = "Could not load equipment and students. Please reopen this section to retry.";
+        }
+    }
+    [RelayCommand]
+    private async Task UpdateStudentAsync()
+    {
+        if (SelectedStudentForUpdate is null)
+        {
+            StatusMessage = "Select a student first.";
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(StudentUpdateNameInput))
+        {
+            StatusMessage = "Student name is required.";
+            return;
+        }
+
+        try
+        {
+            var result = await _operations.UpdateStudentAsync(
+                SelectedStudentForUpdate.StudentId,
+                StudentUpdateNameInput,
+                StudentUpdateProgramInput,
+                StudentUpdateContactInput);
+
+            StatusMessage = result.Message;
+
+            if (result.IsSuccess)
+            {
+                SelectedStudentForUpdate = null;
+                await LoadDataAsync();
+            }
+        }
+        catch (Exception)
+        {
+            StatusMessage = "Could not update the student. Please try again.";
         }
     }
     [RelayCommand]

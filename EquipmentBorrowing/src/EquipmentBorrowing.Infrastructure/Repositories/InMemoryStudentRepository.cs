@@ -38,4 +38,12 @@ public class InMemoryStudentRepository : IStudentRepository
         _students.Add(student.StudentId, student);
         return Task.CompletedTask;
     }
+    public Task SaveStudentAsync(
+    Student student,
+    CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        _students[student.StudentId] = student;
+        return Task.CompletedTask;
+    }
 }

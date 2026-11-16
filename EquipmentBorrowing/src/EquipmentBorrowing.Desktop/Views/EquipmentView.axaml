@@ -44,6 +44,37 @@
                 Command="{Binding RegisterStudentCommand}"
                 HorizontalAlignment="Left" />
     </StackPanel>
+    </Border>
+        <Border Classes="Card">
+    <StackPanel Spacing="8">
+        <TextBlock Text="Update Student" Classes="SectionLabel" />
+
+        <TextBlock Text="Select student:" />
+        <ComboBox ItemsSource="{Binding StudentList}"
+                  SelectedItem="{Binding SelectedStudentForUpdate}">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Name}" />
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+
+        <TextBlock Text="Full name:" />
+        <TextBox Text="{Binding StudentUpdateNameInput}"
+                 PlaceholderText="Enter full name" />
+
+        <TextBlock Text="Program (optional):" />
+        <TextBox Text="{Binding StudentUpdateProgramInput}"
+                 PlaceholderText="Enter program" />
+
+        <TextBlock Text="Contact (optional):" />
+        <TextBox Text="{Binding StudentUpdateContactInput}"
+                 PlaceholderText="Enter contact information" />
+
+        <Button Content="Update Student"
+                Command="{Binding UpdateStudentCommand}"
+                HorizontalAlignment="Left" />
+    </StackPanel>
 </Border>
         <Border Classes="Card">
     <StackPanel Spacing="8">
