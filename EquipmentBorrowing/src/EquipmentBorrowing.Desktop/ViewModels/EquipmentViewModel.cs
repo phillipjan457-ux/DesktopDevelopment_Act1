@@ -43,6 +43,17 @@ public partial class EquipmentViewModel : ViewModelBase
     [ObservableProperty]
     private string equipmentDescriptionInput = string.Empty;
 
+    [ObservableProperty]
+    private string equipmentUpdateNameInput = string.Empty;
+
+    [ObservableProperty]
+    private string equipmentUpdateDescriptionInput = string.Empty;
+
+    partial void OnSelectedEquipmentChanged(Equipment? value)
+    {
+        EquipmentUpdateNameInput = value?.Name ?? string.Empty;
+        EquipmentUpdateDescriptionInput = value?.Description ?? string.Empty;
+    }
     public EquipmentViewModel(IEquipmentBorrowingOperations operations)
     {
         _operations = operations;
@@ -163,6 +174,40 @@ public partial class EquipmentViewModel : ViewModelBase
         {
             StatusMessage =
                 "Could not register the equipment. Check the ID and try again.";
+        }
+    }
+    [RelayCommand]
+    private async Task UpdateEquipmentAsync()
+    {
+        if (SelectedEquipment is null)
+        {
+            StatusMessage = "Select equipment from the list first.";
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(EquipmentUpdateNameInput))
+        {
+            StatusMessage = "Equipment name is required.";
+            return;
+        }
+
+        try
+        {
+            var result = await _operations.UpdateEquipmentAsync(
+                SelectedEquipment.EquipmentId,
+                EquipmentUpdateNameInput,
+                EquipmentUpdateDescriptionInput);
+
+            StatusMessage = result.Message;
+
+            if (result.IsSuccess)
+            {
+                await LoadDataAsync();
+            }
+        }
+        catch (Exception)
+        {
+            StatusMessage = "Could not update the equipment. Please try again.";
         }
     }
 }

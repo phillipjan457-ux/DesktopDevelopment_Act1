@@ -57,6 +57,7 @@ public partial class App : Avalonia.Application
             services.AddScoped<ReturnEquipmentService>();
             services.AddScoped<RegisterStudentService>();
             services.AddScoped<RegisterEquipmentService>();
+            services.AddScoped<UpdateEquipmentService>();
 
             // Creates and disposes a scope for each operation.
             services.AddSingleton<
