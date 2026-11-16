@@ -9,5 +9,7 @@ public interface IEquipmentRepository
     Task<IEnumerable<Equipment>> GetAllEquipmentAsync(CancellationToken cancellationToken = default);
     Task<IEnumerable<Equipment>> GetAvailableEquipmentAsync(
     CancellationToken cancellationToken = default);
-
+    Task AddEquipmentAsync(
+    Equipment equipment,
+    CancellationToken cancellationToken = default);
 }

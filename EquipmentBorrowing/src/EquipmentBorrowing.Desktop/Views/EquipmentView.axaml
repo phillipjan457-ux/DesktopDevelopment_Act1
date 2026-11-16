@@ -44,6 +44,27 @@
                 HorizontalAlignment="Left" />
     </StackPanel>
 </Border>
+        <Border Classes="Card">
+    <StackPanel Spacing="8">
+        <TextBlock Text="Register Equipment" Classes="SectionLabel" />
+
+        <TextBlock Text="Equipment ID:" />
+        <TextBox Text="{Binding EquipmentIdInput}"
+                 PlaceholderText="Enter equipment ID" />
+
+        <TextBlock Text="Name:" />
+        <TextBox Text="{Binding EquipmentNameInput}"
+                 PlaceholderText="Enter equipment name" />
+
+        <TextBlock Text="Description (optional):" />
+        <TextBox Text="{Binding EquipmentDescriptionInput}"
+                 PlaceholderText="Enter description" />
+
+        <Button Content="Register Equipment"
+                Command="{Binding RegisterEquipmentCommand}"
+                HorizontalAlignment="Left" />
+    </StackPanel>
+</Border>
         <Border Classes="Card" Margin="0,10,0,0">
             <StackPanel Spacing="8">
                 <TextBlock Text="Borrow Selected Equipment" Classes="SectionLabel" />
@@ -66,5 +87,6 @@
             </StackPanel>
         </Border>
     </StackPanel>
+
 
 </UserControl>

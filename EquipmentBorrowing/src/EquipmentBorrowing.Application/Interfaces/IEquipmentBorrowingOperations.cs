@@ -30,5 +30,11 @@ public interface IEquipmentBorrowingOperations
     string name,
     string? contact,
     CancellationToken cancellationToken = default);
- 
+
+    Task<EquipmentRegistrationResult> RegisterEquipmentAsync(
+    string equipmentId,
+    string name,
+    string? description,
+    CancellationToken cancellationToken = default);
+
 }

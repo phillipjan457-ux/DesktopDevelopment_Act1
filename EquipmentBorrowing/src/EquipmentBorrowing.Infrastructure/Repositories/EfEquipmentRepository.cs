@@ -64,4 +64,12 @@ public class EfEquipmentRepository : IEquipmentRepository
         // The application operation will commit all changes together.
         return existing ?? equipment;
     }
+    public Task AddEquipmentAsync(
+    Equipment equipment,
+    CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        _context.Equipment.Add(equipment);
+        return Task.CompletedTask;
+    }
 }
