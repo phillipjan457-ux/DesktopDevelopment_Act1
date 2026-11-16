@@ -24,4 +24,18 @@ public class InMemoryStudentRepository : IStudentRepository
     {
         return Task.FromResult(_students.Values.AsEnumerable());
     }
+    public Task AddStudentAsync(
+    Student student,
+    CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        if (_students.ContainsKey(student.StudentId))
+        {
+            throw new InvalidOperationException("Student ID already exists.");
+        }
+
+        _students.Add(student.StudentId, student);
+        return Task.CompletedTask;
+    }
 }

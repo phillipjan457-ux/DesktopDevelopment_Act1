@@ -13,7 +13,14 @@ public class EfStudentRepository : IStudentRepository
     {
         _context = context;
     }
-
+    public Task AddStudentAsync(
+    Student student,
+    CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        _context.Students.Add(student);
+        return Task.CompletedTask;
+    }
     public async Task<Student?> GetStudentByIdAsync(
         string studentId,
         CancellationToken cancellationToken = default)
