@@ -117,4 +117,21 @@ public sealed class ScopedEquipmentBorrowingOperations
             description,
             cancellationToken);
     }
+    public async Task<EquipmentUpdateResult> UpdateEquipmentAsync(
+    string equipmentId,
+    string name,
+    string? description,
+    CancellationToken cancellationToken = default)
+    {
+        await using var scope = _scopeFactory.CreateAsyncScope();
+
+        var service = scope.ServiceProvider
+            .GetRequiredService<UpdateEquipmentService>();
+
+        return await service.UpdateAsync(
+            equipmentId,
+            name,
+            description,
+            cancellationToken);
+    }
 }

@@ -3,7 +3,7 @@
              xmlns:vm="using:EquipmentBorrowing.Desktop.ViewModels"
              x:Class="EquipmentBorrowing.Desktop.Views.BorrowingsView"
              x:DataType="vm:BorrowingsViewModel">
-
+   
     <StackPanel Spacing="10">
         <TextBlock Text="Active Borrowings" Classes="Heading" />
 
