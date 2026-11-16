@@ -52,9 +52,11 @@ public partial class App : Avalonia.Application
             services.AddScoped<IBorrowingRepository, EfBorrowingRepository>();
             services.AddScoped<IUnitOfWork, EfUnitOfWork>();
 
+
             services.AddScoped<BorrowEquipmentService>();
             services.AddScoped<ReturnEquipmentService>();
             services.AddScoped<RegisterStudentService>();
+            services.AddScoped<RegisterEquipmentService>();
 
             // Creates and disposes a scope for each operation.
             services.AddSingleton<

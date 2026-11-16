@@ -100,4 +100,21 @@ public sealed class ScopedEquipmentBorrowingOperations
             contact,
             cancellationToken);
     }
+    public async Task<EquipmentRegistrationResult> RegisterEquipmentAsync(
+    string equipmentId,
+    string name,
+    string? description,
+    CancellationToken cancellationToken = default)
+    {
+        await using var scope = _scopeFactory.CreateAsyncScope();
+
+        var service = scope.ServiceProvider
+            .GetRequiredService<RegisterEquipmentService>();
+
+        return await service.RegisterAsync(
+            equipmentId,
+            name,
+            description,
+            cancellationToken);
+    }
 }

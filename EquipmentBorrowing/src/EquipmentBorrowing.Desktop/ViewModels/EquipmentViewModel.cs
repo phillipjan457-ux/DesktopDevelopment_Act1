@@ -34,6 +34,14 @@ public partial class EquipmentViewModel : ViewModelBase
 
     [ObservableProperty]
     private string studentContactInput = string.Empty;
+    [ObservableProperty]
+    private string equipmentIdInput = string.Empty;
+
+    [ObservableProperty]
+    private string equipmentNameInput = string.Empty;
+
+    [ObservableProperty]
+    private string equipmentDescriptionInput = string.Empty;
 
     public EquipmentViewModel(IEquipmentBorrowingOperations operations)
     {
@@ -121,6 +129,40 @@ public partial class EquipmentViewModel : ViewModelBase
         catch (Exception)
         {
             StatusMessage = "Could not complete the borrowing. Reload the equipment list before retrying.";
+        }
+    }
+
+    [RelayCommand]
+    private async Task RegisterEquipmentAsync()
+    {
+        if (string.IsNullOrWhiteSpace(EquipmentIdInput) ||
+            string.IsNullOrWhiteSpace(EquipmentNameInput))
+        {
+            StatusMessage = "Equipment ID and name are required.";
+            return;
+        }
+
+        try
+        {
+            var result = await _operations.RegisterEquipmentAsync(
+                EquipmentIdInput,
+                EquipmentNameInput,
+                EquipmentDescriptionInput);
+
+            StatusMessage = result.Message;
+
+            if (result.IsSuccess)
+            {
+                EquipmentIdInput = string.Empty;
+                EquipmentNameInput = string.Empty;
+                EquipmentDescriptionInput = string.Empty;
+                await LoadDataAsync();
+            }
+        }
+        catch (Exception)
+        {
+            StatusMessage =
+                "Could not register the equipment. Check the ID and try again.";
         }
     }
 }

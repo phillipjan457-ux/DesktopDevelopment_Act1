@@ -2,6 +2,7 @@ namespace EquipmentBorrowing.Infrastructure.Repositories;
 
 using EquipmentBorrowing.Application.Interfaces;
 using EquipmentBorrowing.Domain;
+using Microsoft.EntityFrameworkCore;
 
 public class InMemoryEquipmentRepository : IEquipmentRepository
 {
@@ -41,5 +42,19 @@ public class InMemoryEquipmentRepository : IEquipmentRepository
             .ToList();
 
         return Task.FromResult(equipment);
+    }
+    public Task AddEquipmentAsync(
+    Equipment equipment,
+    CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        if (_equipment.ContainsKey(equipment.EquipmentId))
+        {
+            throw new InvalidOperationException("Equipment ID already exists.");
+        }
+
+        _equipment.Add(equipment.EquipmentId, equipment);
+        return Task.CompletedTask;
     }
 }
