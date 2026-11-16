@@ -22,7 +22,28 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
+        
+        <Border Classes="Card">
+    <StackPanel Spacing="8">
+        <TextBlock Text="Register Student" Classes="SectionLabel" />
 
+        <TextBlock Text="Institutional number:" />
+        <TextBox Text="{Binding StudentIdInput}"
+                 PlaceholderText="Enter student number" />
+
+        <TextBlock Text="Full name:" />
+        <TextBox Text="{Binding StudentNameInput}"
+                 PlaceholderText="Enter full name" />
+
+        <TextBlock Text="Contact (optional):" />
+        <TextBox Text="{Binding StudentContactInput}"
+                 PlaceholderText="Enter contact information" />
+
+        <Button Content="Register Student"
+                Command="{Binding RegisterStudentCommand}"
+                HorizontalAlignment="Left" />
+    </StackPanel>
+</Border>
         <Border Classes="Card" Margin="0,10,0,0">
             <StackPanel Spacing="8">
                 <TextBlock Text="Borrow Selected Equipment" Classes="SectionLabel" />

@@ -25,4 +25,10 @@ public interface IEquipmentBorrowingOperations
     Task<ReturnResult> ReturnAsync(
         string borrowId,
         CancellationToken cancellationToken = default);
+    Task<StudentRegistrationResult> RegisterStudentAsync(
+    string studentId,
+    string name,
+    string? contact,
+    CancellationToken cancellationToken = default);
+ 
 }

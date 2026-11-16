@@ -81,5 +81,23 @@ public sealed class ScopedEquipmentBorrowingOperations
         return await service.ReturnEquipmentAsync(
             borrowId,
             cancellationToken);
+
+    }
+    public async Task<StudentRegistrationResult> RegisterStudentAsync(
+    string studentId,
+    string name,
+    string? contact,
+    CancellationToken cancellationToken = default)
+    {
+        await using var scope = _scopeFactory.CreateAsyncScope();
+
+        var service = scope.ServiceProvider
+            .GetRequiredService<RegisterStudentService>();
+
+        return await service.RegisterAsync(
+            studentId,
+            name,
+            contact,
+            cancellationToken);
     }
 }

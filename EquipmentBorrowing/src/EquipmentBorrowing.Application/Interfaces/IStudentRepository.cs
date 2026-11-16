@@ -6,4 +6,8 @@ public interface IStudentRepository
     Task<Student?> GetStudentByIdAsync(string studentId, CancellationToken cancellationToken = default);
     Task<IEnumerable<Student>> GetAllStudentsAsync(CancellationToken cancellationToken = default);
 
+    Task AddStudentAsync(
+    Student student,
+    CancellationToken cancellationToken = default);
 }
+

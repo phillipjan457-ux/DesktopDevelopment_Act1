@@ -26,6 +26,14 @@ public partial class EquipmentViewModel : ViewModelBase
 
     [ObservableProperty]
     private string? statusMessage;
+    [ObservableProperty]
+    private string studentIdInput = string.Empty;
+
+    [ObservableProperty]
+    private string studentNameInput = string.Empty;
+
+    [ObservableProperty]
+    private string studentContactInput = string.Empty;
 
     public EquipmentViewModel(IEquipmentBorrowingOperations operations)
     {
@@ -46,6 +54,39 @@ public partial class EquipmentViewModel : ViewModelBase
         catch (Exception)
         {
             StatusMessage = "Could not load equipment and students. Please reopen this section to retry.";
+        }
+    }
+    [RelayCommand]
+    private async Task RegisterStudentAsync()
+    {
+        if (string.IsNullOrWhiteSpace(StudentIdInput) ||
+            string.IsNullOrWhiteSpace(StudentNameInput))
+        {
+            StatusMessage = "Student ID and name are required.";
+            return;
+        }
+
+        try
+        {
+            var result = await _operations.RegisterStudentAsync(
+                StudentIdInput,
+                StudentNameInput,
+                StudentContactInput);
+
+            StatusMessage = result.Message;
+
+            if (result.IsSuccess)
+            {
+                StudentIdInput = string.Empty;
+                StudentNameInput = string.Empty;
+                StudentContactInput = string.Empty;
+                await LoadDataAsync();
+            }
+        }
+        catch (Exception)
+        {
+            StatusMessage =
+                "Could not register the student. Check the ID and try again.";
         }
     }
 
