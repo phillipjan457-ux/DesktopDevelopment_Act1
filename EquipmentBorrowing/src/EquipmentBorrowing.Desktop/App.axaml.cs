@@ -10,8 +10,9 @@ using EquipmentBorrowing.Infrastructure.Persistence;
 using EquipmentBorrowing.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using System.Diagnostics;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Diagnostics;
 
 namespace EquipmentBorrowing.Desktop;
 
@@ -29,9 +30,14 @@ public partial class App : Avalonia.Application
             var services = new ServiceCollection();
 
             // One context shared by the services within each operation.
+            var connectionString =
+    Environment.GetEnvironmentVariable("EQUIPMENT_BORROWING_CONNECTION")
+    ?? throw new InvalidOperationException(
+        "Set the EQUIPMENT_BORROWING_CONNECTION environment variable.");
+
             services.AddDbContext<EquipmentBorrowingDbContext>(options =>
             {
-                options.UseSqlite(EquipmentDatabase.GetConnectionString());
+                options.UseNpgsql(connectionString);
 
 #if DEBUG
                 options.LogTo(
