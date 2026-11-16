@@ -9,5 +9,8 @@ public interface IStudentRepository
     Task AddStudentAsync(
     Student student,
     CancellationToken cancellationToken = default);
+    Task SaveStudentAsync(
+    Student student,
+    CancellationToken cancellationToken = default);
 }
 

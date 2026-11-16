@@ -57,4 +57,5 @@ public class InMemoryEquipmentRepository : IEquipmentRepository
         _equipment.Add(equipment.EquipmentId, equipment);
         return Task.CompletedTask;
     }
+ 
 }

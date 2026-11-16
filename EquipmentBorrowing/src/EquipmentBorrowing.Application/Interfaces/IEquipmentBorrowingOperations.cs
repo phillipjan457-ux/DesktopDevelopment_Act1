@@ -41,5 +41,11 @@ public interface IEquipmentBorrowingOperations
     string name,
     string? description,
     CancellationToken cancellationToken = default);
+    Task<StudentUpdateResult> UpdateStudentAsync(
+    string studentId,
+    string name,
+    string? program,
+    string? contact,
+    CancellationToken cancellationToken = default);
 
 }
