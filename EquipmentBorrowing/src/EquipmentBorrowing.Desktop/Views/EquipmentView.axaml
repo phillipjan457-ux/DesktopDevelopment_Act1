@@ -70,7 +70,8 @@
         <TextBlock Text="Contact (optional):" />
         <TextBox Text="{Binding StudentUpdateContactInput}"
                  PlaceholderText="Enter contact information" />
-
+        <CheckBox Content="Authorized to borrow equipment"
+          IsChecked="{Binding StudentUpdateIsAuthorizedInput}" />
         <Button Content="Update Student"
                 Command="{Binding UpdateStudentCommand}"
                 HorizontalAlignment="Left" />

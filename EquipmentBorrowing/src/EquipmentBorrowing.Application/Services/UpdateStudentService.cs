@@ -20,6 +20,7 @@ public sealed class UpdateStudentService
         string name,
         string? program,
         string? contact,
+        bool isAuthorized,
         CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(studentId) ||
@@ -53,6 +54,7 @@ public sealed class UpdateStudentService
         student.Contact = string.IsNullOrWhiteSpace(contact)
             ? null
             : contact.Trim();
+        student.IsAuthorized = isAuthorized;
 
         await _students.SaveStudentAsync(student, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);

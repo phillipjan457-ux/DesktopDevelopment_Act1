@@ -61,6 +61,9 @@ public partial class EquipmentViewModel : ViewModelBase
     [ObservableProperty]
     private string studentUpdateContactInput = string.Empty;
 
+    [ObservableProperty]
+    private bool studentUpdateIsAuthorizedInput = true;
+
     partial void OnSelectedEquipmentChanged(Equipment? value)
     {
         EquipmentUpdateNameInput = value?.Name ?? string.Empty;
@@ -72,6 +75,7 @@ public partial class EquipmentViewModel : ViewModelBase
         StudentUpdateNameInput = value?.Name ?? string.Empty;
         StudentUpdateProgramInput = value?.Program ?? string.Empty;
         StudentUpdateContactInput = value?.Contact ?? string.Empty;
+        StudentUpdateIsAuthorizedInput = value?.IsAuthorized ?? true;
     }
 
     public EquipmentViewModel(IEquipmentBorrowingOperations operations)
@@ -116,7 +120,9 @@ public partial class EquipmentViewModel : ViewModelBase
                 SelectedStudentForUpdate.StudentId,
                 StudentUpdateNameInput,
                 StudentUpdateProgramInput,
-                StudentUpdateContactInput);
+                StudentUpdateContactInput,
+                StudentUpdateIsAuthorizedInput);
+
 
             StatusMessage = result.Message;
 

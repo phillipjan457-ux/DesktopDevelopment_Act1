@@ -46,6 +46,7 @@ public interface IEquipmentBorrowingOperations
     string name,
     string? program,
     string? contact,
+    bool isAuthorized,
     CancellationToken cancellationToken = default);
 
 }

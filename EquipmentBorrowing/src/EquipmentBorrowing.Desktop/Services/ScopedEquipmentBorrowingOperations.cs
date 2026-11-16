@@ -139,6 +139,7 @@ public sealed class ScopedEquipmentBorrowingOperations
     string name,
     string? program,
     string? contact,
+    bool isAuthorized,
     CancellationToken cancellationToken = default)
     {
         await using var scope = _scopeFactory.CreateAsyncScope();
@@ -151,6 +152,7 @@ public sealed class ScopedEquipmentBorrowingOperations
             name,
             program,
             contact,
+            isAuthorized,
             cancellationToken);
     }
 }
