@@ -46,4 +46,12 @@ public class InMemoryStudentRepository : IStudentRepository
         _students[student.StudentId] = student;
         return Task.CompletedTask;
     }
+    public Task DeleteStudentAsync(
+    Student student,
+    CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        _students.Remove(student.StudentId);
+        return Task.CompletedTask;
+    }
 }

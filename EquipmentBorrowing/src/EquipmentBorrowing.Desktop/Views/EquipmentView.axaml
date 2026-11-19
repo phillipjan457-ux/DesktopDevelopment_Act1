@@ -58,7 +58,9 @@
                 </DataTemplate>
             </ComboBox.ItemTemplate>
         </ComboBox>
-
+        <TextBlock Text="Institutional number:" />
+<TextBox Text="{Binding StudentUpdateIdInput}"
+         PlaceholderText="Enter institutional number" />
         <TextBlock Text="Full name:" />
         <TextBox Text="{Binding StudentUpdateNameInput}"
                  PlaceholderText="Enter full name" />
