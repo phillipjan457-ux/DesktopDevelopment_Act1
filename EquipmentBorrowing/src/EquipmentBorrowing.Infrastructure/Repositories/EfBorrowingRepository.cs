@@ -98,4 +98,17 @@ public class EfBorrowingRepository : IBorrowingRepository
             .ThenBy(borrowing => borrowing.BorrowId)
             .ToListAsync(cancellationToken);
     }
+    public async Task UpdateStudentIdAsync(
+    string oldStudentId,
+    Student updatedStudent,
+    CancellationToken cancellationToken = default)
+    {
+        await _context.Borrowings
+            .Where(borrowing => borrowing.StudentId == oldStudentId)
+            .ExecuteUpdateAsync(
+                setters => setters.SetProperty(
+                    borrowing => borrowing.StudentId,
+                    updatedStudent.StudentId),
+                cancellationToken);
+    }
 }

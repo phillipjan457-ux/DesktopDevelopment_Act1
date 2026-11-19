@@ -78,6 +78,8 @@ public partial class EquipmentViewModel : ViewModelBase
 
     [ObservableProperty]
     private string borrowStatusMessage = string.Empty;
+    [ObservableProperty]
+    private string studentUpdateIdInput = string.Empty;
 
     partial void OnSelectedEquipmentChanged(Equipment? value)
     {
@@ -91,6 +93,7 @@ public partial class EquipmentViewModel : ViewModelBase
         StudentUpdateProgramInput = value?.Program ?? string.Empty;
         StudentUpdateContactInput = value?.Contact ?? string.Empty;
         StudentUpdateIsAuthorizedInput = value?.IsAuthorized ?? true;
+        StudentUpdateIdInput = value?.StudentId ?? string.Empty;
     }
 
     public EquipmentViewModel(IEquipmentBorrowingOperations operations)
@@ -135,11 +138,12 @@ public partial class EquipmentViewModel : ViewModelBase
         try
         {
             var result = await _operations.UpdateStudentAsync(
-                SelectedStudentForUpdate.StudentId,
-                StudentUpdateNameInput,
-                StudentUpdateProgramInput,
-                StudentUpdateContactInput,
-                StudentUpdateIsAuthorizedInput);
+    SelectedStudentForUpdate.StudentId,
+    StudentUpdateIdInput,
+    StudentUpdateNameInput,
+    StudentUpdateProgramInput,
+    StudentUpdateContactInput,
+    StudentUpdateIsAuthorizedInput);
 
 
             StatusMessage = result.Message;

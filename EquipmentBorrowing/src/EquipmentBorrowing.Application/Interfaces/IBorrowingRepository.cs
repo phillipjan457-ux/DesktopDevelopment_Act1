@@ -13,4 +13,8 @@ public interface IBorrowingRepository
     CancellationToken cancellationToken = default);
     Task<IEnumerable<Borrowing>> ListAllBorrowings(
     CancellationToken cancellationToken = default);
+    Task UpdateStudentIdAsync(
+    string oldStudentId,
+    Student updatedStudent,
+    CancellationToken cancellationToken = default);
 }

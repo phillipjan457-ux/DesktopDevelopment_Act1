@@ -48,4 +48,12 @@ public class EfStudentRepository : IStudentRepository
         _context.Students.Update(student);
         return Task.CompletedTask;
     }
+    public Task DeleteStudentAsync(
+    Student student,
+    CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        _context.Students.Remove(student);
+        return Task.CompletedTask;
+    }
 }

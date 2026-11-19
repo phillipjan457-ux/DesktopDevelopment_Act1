@@ -137,6 +137,7 @@ public sealed class ScopedEquipmentBorrowingOperations
     }
     public async Task<StudentUpdateResult> UpdateStudentAsync(
     string studentId,
+    string newStudentId,
     string name,
     string? program,
     string? contact,
@@ -149,12 +150,13 @@ public sealed class ScopedEquipmentBorrowingOperations
             .GetRequiredService<UpdateStudentService>();
 
         return await service.UpdateAsync(
-            studentId,
-            name,
-            program,
-            contact,
-            isAuthorized,
-            cancellationToken);
+    studentId,
+    newStudentId,
+    name,
+    program,
+    contact,
+    isAuthorized,
+    cancellationToken);
     }
     public async Task<MultiCheckoutResult> CheckoutMultipleAsync(
     string studentId,

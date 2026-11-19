@@ -61,4 +61,20 @@ public class InMemoryBorrowingRepository : IBorrowingRepository
 
         return Task.FromResult(borrowings);
     }
+    public Task UpdateStudentIdAsync(
+    string oldStudentId,
+    Student updatedStudent,
+    CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        foreach (var borrowing in _borrowings.Where(
+                     borrowing => borrowing.StudentId == oldStudentId))
+        {
+            borrowing.StudentId = updatedStudent.StudentId;
+            borrowing.Student = updatedStudent;
+        }
+
+        return Task.CompletedTask;
+    }
 }
