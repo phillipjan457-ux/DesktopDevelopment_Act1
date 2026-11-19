@@ -49,4 +49,16 @@ public class InMemoryBorrowingRepository : IBorrowingRepository
 
         return Task.FromResult<IEnumerable<Borrowing>>(borrowings);
     }
+    public Task<IEnumerable<Borrowing>> ListAllBorrowings(
+    CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        IEnumerable<Borrowing> borrowings = _borrowings
+            .OrderByDescending(borrowing => borrowing.BorrowDate)
+            .ThenBy(borrowing => borrowing.BorrowId)
+            .ToList();
+
+        return Task.FromResult(borrowings);
+    }
 }
