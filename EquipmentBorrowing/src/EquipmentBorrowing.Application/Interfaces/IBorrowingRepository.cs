@@ -11,4 +11,6 @@ public interface IBorrowingRepository
     Task<IEnumerable<Borrowing>> ListByEquipmentAsync(
     string equipmentId,
     CancellationToken cancellationToken = default);
+    Task<IEnumerable<Borrowing>> ListAllBorrowings(
+    CancellationToken cancellationToken = default);
 }

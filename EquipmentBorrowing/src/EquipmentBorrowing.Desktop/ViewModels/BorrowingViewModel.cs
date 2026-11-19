@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using EquipmentBorrowing.Application.Interfaces;
 using EquipmentBorrowing.Domain;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -45,6 +46,26 @@ public partial class BorrowingsViewModel : ViewModelBase
 
     [ObservableProperty]
     private string equipmentHistoryStatusMessage = string.Empty;
+    [ObservableProperty]
+    private string borrowingSearchText = string.Empty;
+
+    [ObservableProperty]
+    private string selectedBorrowingStatusFilter = "All";
+
+    [ObservableProperty]
+    private string selectedBorrowingSort = "Newest first";
+
+    [ObservableProperty]
+    private ObservableCollection<Borrowing> borrowingSearchResults = new();
+
+    [ObservableProperty]
+    private string borrowingSearchStatus = string.Empty;
+
+    public IReadOnlyList<string> BorrowingStatusOptions { get; } =
+        new[] { "All", "Active", "Returned" };
+
+    public IReadOnlyList<string> BorrowingSortOptions { get; } =
+        new[] { "Newest first", "Oldest first", "Due date (soonest)" };
     public BorrowingsViewModel(IEquipmentBorrowingOperations operations)
     {
         _operations = operations;
@@ -158,6 +179,63 @@ public partial class BorrowingsViewModel : ViewModelBase
         {
             EquipmentHistoryStatusMessage =
                 "Could not load this equipment's borrowing history.";
+        }
+    }
+    [RelayCommand]
+    private async Task SearchBorrowingsAsync()
+    {
+        try
+        {
+            var allBorrowings =
+                await _operations.GetAllBorrowingsAsync();
+
+            IEnumerable<Borrowing> query = allBorrowings;
+
+            var term = BorrowingSearchText.Trim();
+
+            if (!string.IsNullOrWhiteSpace(term))
+            {
+                query = query.Where(borrowing =>
+                    borrowing.BorrowId.Contains(term, StringComparison.OrdinalIgnoreCase) ||
+                    borrowing.Student.Name.Contains(term, StringComparison.OrdinalIgnoreCase) ||
+                    borrowing.Student.StudentId.Contains(term, StringComparison.OrdinalIgnoreCase) ||
+                    borrowing.Equipment.Name.Contains(term, StringComparison.OrdinalIgnoreCase) ||
+                    borrowing.Equipment.EquipmentId.Contains(term, StringComparison.OrdinalIgnoreCase));
+            }
+
+            if (SelectedBorrowingStatusFilter != "All")
+            {
+                query = query.Where(borrowing =>
+                    borrowing.Status.ToString() == SelectedBorrowingStatusFilter);
+            }
+
+            var results = SelectedBorrowingSort switch
+            {
+                "Oldest first" => query
+                    .OrderBy(borrowing => borrowing.BorrowDate)
+                    .ThenBy(borrowing => borrowing.BorrowId)
+                    .ToList(),
+
+                "Due date (soonest)" => query
+                    .OrderBy(borrowing => borrowing.ReturnDate)
+                    .ThenBy(borrowing => borrowing.BorrowId)
+                    .ToList(),
+
+                _ => query
+                    .OrderByDescending(borrowing => borrowing.BorrowDate)
+                    .ThenBy(borrowing => borrowing.BorrowId)
+                    .ToList()
+            };
+
+            BorrowingSearchResults =
+                new ObservableCollection<Borrowing>(results);
+
+            BorrowingSearchStatus =
+                $"Showing {results.Count} borrowing record(s).";
+        }
+        catch (Exception)
+        {
+            BorrowingSearchStatus = "Could not search borrowing records.";
         }
     }
 }

@@ -87,4 +87,15 @@ public class EfBorrowingRepository : IBorrowingRepository
             .ThenBy(borrowing => borrowing.BorrowId)
             .ToListAsync(cancellationToken);
     }
+    public async Task<IEnumerable<Borrowing>> ListAllBorrowings(
+    CancellationToken cancellationToken = default)
+    {
+        return await _context.Borrowings
+            .AsNoTracking()
+            .Include(borrowing => borrowing.Student)
+            .Include(borrowing => borrowing.Equipment)
+            .OrderByDescending(borrowing => borrowing.BorrowDate)
+            .ThenBy(borrowing => borrowing.BorrowId)
+            .ToListAsync(cancellationToken);
+    }
 }

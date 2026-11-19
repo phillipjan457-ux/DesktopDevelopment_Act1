@@ -207,4 +207,14 @@ public sealed class ScopedEquipmentBorrowingOperations
         return await repository.ListByEquipmentAsync(
             equipmentId, cancellationToken);
     }
+    public async Task<IEnumerable<Borrowing>> GetAllBorrowingsAsync(
+    CancellationToken cancellationToken = default)
+    {
+        await using var scope = _scopeFactory.CreateAsyncScope();
+
+        var repository = scope.ServiceProvider
+            .GetRequiredService<IBorrowingRepository>();
+
+        return await repository.ListAllBorrowings(cancellationToken);
+    }
 }

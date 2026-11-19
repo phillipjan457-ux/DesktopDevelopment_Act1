@@ -61,4 +61,6 @@ public interface IEquipmentBorrowingOperations
     Task<IEnumerable<Borrowing>> GetEquipmentBorrowingHistoryAsync(
         string equipmentId,
         CancellationToken cancellationToken = default);
+    Task<IEnumerable<Borrowing>> GetAllBorrowingsAsync(
+    CancellationToken cancellationToken = default);
 }
