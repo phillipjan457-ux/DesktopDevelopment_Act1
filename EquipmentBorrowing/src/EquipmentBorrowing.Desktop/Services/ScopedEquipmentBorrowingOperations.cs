@@ -3,6 +3,7 @@ using EquipmentBorrowing.Application.Interfaces;
 using EquipmentBorrowing.Application.Services;
 using EquipmentBorrowing.Domain;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -153,6 +154,23 @@ public sealed class ScopedEquipmentBorrowingOperations
             program,
             contact,
             isAuthorized,
+            cancellationToken);
+    }
+    public async Task<MultiCheckoutResult> CheckoutMultipleAsync(
+    string studentId,
+    IReadOnlyCollection<string> equipmentIds,
+    DateOnly expectedReturnDate,
+    CancellationToken cancellationToken = default)
+    {
+        await using var scope = _scopeFactory.CreateAsyncScope();
+
+        var service = scope.ServiceProvider
+            .GetRequiredService<CheckoutEquipmentService>();
+
+        return await service.CheckoutAsync(
+            studentId,
+            equipmentIds,
+            expectedReturnDate,
             cancellationToken);
     }
 }

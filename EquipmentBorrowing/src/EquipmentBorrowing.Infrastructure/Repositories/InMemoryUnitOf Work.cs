@@ -12,4 +12,11 @@ public class InMemoryUnitOfWork : IUnitOfWork
         // In-memory repositories already update their collections directly.
         return Task.FromResult(0);
     }
+    public Task ExecuteInTransactionAsync(
+    Func<CancellationToken, Task> operation,
+    CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        return operation(cancellationToken);
+    }
 }

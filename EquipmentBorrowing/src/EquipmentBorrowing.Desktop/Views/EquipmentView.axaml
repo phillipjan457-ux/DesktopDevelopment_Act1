@@ -116,6 +116,42 @@
                 HorizontalAlignment="Left" />
     </StackPanel>
 </Border>
+        <Border Classes="Card">
+    <StackPanel Spacing="8">
+        <TextBlock Text="Check Out Multiple Equipment Items"
+                   Classes="SectionLabel" />
+
+        <TextBlock Text="Student:" />
+        <ComboBox ItemsSource="{Binding StudentList}"
+                  SelectedItem="{Binding SelectedCheckoutStudent}">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Name}" />
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+
+        <TextBlock Text="Select at least two available items:" />
+        <ItemsControl ItemsSource="{Binding CheckoutEquipmentOptions}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <CheckBox Content="{Binding Label}"
+                              IsChecked="{Binding IsSelected}" />
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <TextBlock Text="Expected return date:" />
+        <DatePicker SelectedDate="{Binding ExpectedReturnDateInput}" />
+
+        <Button Content="Check Out Selected Items"
+                Command="{Binding CheckoutMultipleCommand}"
+                HorizontalAlignment="Left" />
+
+        <TextBlock Text="{Binding MultiCheckoutStatusMessage}"
+                   Classes="StatusMessage" />
+    </StackPanel>
+</Border>
         <Border Classes="Card" Margin="0,10,0,0">
             <StackPanel Spacing="8">
                 <TextBlock Text="Borrow Selected Equipment" Classes="SectionLabel" />
@@ -134,7 +170,7 @@
                         Command="{Binding BorrowCommand}"
                         HorizontalAlignment="Left" />
 
-                <TextBlock Text="{Binding StatusMessage}" Classes="StatusMessage" />
+                <TextBlock Text="{Binding BorrowStatusMessage}" Classes="StatusMessage" />
             </StackPanel>
         </Border>
         </StackPanel>

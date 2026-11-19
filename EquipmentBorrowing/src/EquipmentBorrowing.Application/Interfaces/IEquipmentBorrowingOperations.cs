@@ -21,7 +21,11 @@ public interface IEquipmentBorrowingOperations
         string studentId,
         string equipmentId,
         CancellationToken cancellationToken = default);
-
+    Task<MultiCheckoutResult> CheckoutMultipleAsync(
+    string studentId,
+    IReadOnlyCollection<string> equipmentIds,
+    DateOnly expectedReturnDate,
+    CancellationToken cancellationToken = default);
     Task<ReturnResult> ReturnAsync(
         string borrowId,
         CancellationToken cancellationToken = default);
