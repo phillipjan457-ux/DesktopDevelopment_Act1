@@ -33,6 +33,18 @@ public partial class BorrowingsViewModel : ViewModelBase
 
     [ObservableProperty]
     private string historyStatusMessage = string.Empty;
+
+    [ObservableProperty]
+    private ObservableCollection<Equipment> equipmentList = new();
+
+    [ObservableProperty]
+    private Equipment? selectedHistoryEquipment;
+
+    [ObservableProperty]
+    private ObservableCollection<Borrowing> equipmentBorrowingHistory = new();
+
+    [ObservableProperty]
+    private string equipmentHistoryStatusMessage = string.Empty;
     public BorrowingsViewModel(IEquipmentBorrowingOperations operations)
     {
         _operations = operations;
@@ -41,6 +53,8 @@ public partial class BorrowingsViewModel : ViewModelBase
 
     private async Task LoadDataAsync()
     {
+        var equipment = await _operations.GetAllEquipmentAsync();
+        EquipmentList = new ObservableCollection<Equipment>(equipment);
         var students = await _operations.GetStudentsAsync();
         StudentList = new ObservableCollection<Student>(students);
         try
@@ -80,6 +94,10 @@ public partial class BorrowingsViewModel : ViewModelBase
             {
                 await LoadStudentHistoryAsync();
             }
+            if (SelectedHistoryEquipment is not null)
+            {
+                await LoadEquipmentHistoryAsync();
+            }
         }
         catch (Exception)
         {
@@ -111,6 +129,35 @@ public partial class BorrowingsViewModel : ViewModelBase
         catch (Exception)
         {
             HistoryStatusMessage = "Could not load this student's borrowing history.";
+        }
+    }
+    [RelayCommand]
+    private async Task LoadEquipmentHistoryAsync()
+    {
+        if (SelectedHistoryEquipment is null)
+        {
+            EquipmentBorrowingHistory.Clear();
+            EquipmentHistoryStatusMessage =
+                "Select equipment to view its borrowing history.";
+            return;
+        }
+
+        try
+        {
+            var history = (await _operations.GetEquipmentBorrowingHistoryAsync(
+                SelectedHistoryEquipment.EquipmentId)).ToList();
+
+            EquipmentBorrowingHistory =
+                new ObservableCollection<Borrowing>(history);
+
+            EquipmentHistoryStatusMessage = history.Count == 0
+                ? "This equipment has no borrowing history."
+                : $"Showing {history.Count} borrowing record(s).";
+        }
+        catch (Exception)
+        {
+            EquipmentHistoryStatusMessage =
+                "Could not load this equipment's borrowing history.";
         }
     }
 }

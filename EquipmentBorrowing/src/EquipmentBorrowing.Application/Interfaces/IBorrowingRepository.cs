@@ -8,4 +8,7 @@ public interface IBorrowingRepository
     Task<IEnumerable<Borrowing>> ListOfBorrows(string studentId, CancellationToken cancellationToken = default);
     Task<Borrowing?> GetBorrowingByIdAsync(string borrowId, CancellationToken cancellationToken = default);
     Task<IEnumerable<Borrowing>> ListActiveBorrowings(CancellationToken cancellationToken = default);
+    Task<IEnumerable<Borrowing>> ListByEquipmentAsync(
+    string equipmentId,
+    CancellationToken cancellationToken = default);
 }
