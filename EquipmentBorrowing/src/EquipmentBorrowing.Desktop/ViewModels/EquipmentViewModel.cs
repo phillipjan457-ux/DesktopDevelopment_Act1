@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using EquipmentBorrowing.Application.Interfaces;
 using EquipmentBorrowing.Domain;
+using System.Linq;
 
 namespace EquipmentBorrowing.Desktop.ViewModels;
 
@@ -63,6 +64,20 @@ public partial class EquipmentViewModel : ViewModelBase
 
     [ObservableProperty]
     private bool studentUpdateIsAuthorizedInput = true;
+    [ObservableProperty]
+    private ObservableCollection<EquipmentCheckoutOption> checkoutEquipmentOptions = new();
+
+    [ObservableProperty]
+    private Student? selectedCheckoutStudent;
+
+    [ObservableProperty]
+    private DateTimeOffset? expectedReturnDateInput =
+        DateTimeOffset.Now.Date.AddDays(14);
+    [ObservableProperty]
+    private string multiCheckoutStatusMessage = string.Empty;
+
+    [ObservableProperty]
+    private string borrowStatusMessage = string.Empty;
 
     partial void OnSelectedEquipmentChanged(Equipment? value)
     {
@@ -92,6 +107,9 @@ public partial class EquipmentViewModel : ViewModelBase
             var students = await _operations.GetStudentsAsync();
 
             EquipmentList = new ObservableCollection<Equipment>(equipment);
+            CheckoutEquipmentOptions =
+    new ObservableCollection<EquipmentCheckoutOption>(
+        equipment.Select(item => new EquipmentCheckoutOption(item)));
             StudentList = new ObservableCollection<Student>(students);
         }
         catch (Exception)
@@ -270,6 +288,54 @@ public partial class EquipmentViewModel : ViewModelBase
         catch (Exception)
         {
             StatusMessage = "Could not update the equipment. Please try again.";
+        }
+    }
+    [RelayCommand]
+    private async Task CheckoutMultipleAsync()
+    {
+        if (SelectedCheckoutStudent is null)
+        {
+            MultiCheckoutStatusMessage = "Select a student.";
+            return;
+        }
+
+        var selectedIds = CheckoutEquipmentOptions
+            .Where(option => option.IsSelected)
+            .Select(option => option.Equipment.EquipmentId)
+            .ToArray();
+
+        if (selectedIds.Length < 2)
+        {
+            MultiCheckoutStatusMessage = "Select at least two equipment items.";
+            return;
+        }
+
+        if (ExpectedReturnDateInput is null)
+        {
+            MultiCheckoutStatusMessage = "Choose an expected return date.";
+            return;
+        }
+
+        try
+        {
+            var result = await _operations.CheckoutMultipleAsync(
+                SelectedCheckoutStudent.StudentId,
+                selectedIds,
+                DateOnly.FromDateTime(ExpectedReturnDateInput.Value.DateTime));
+
+            MultiCheckoutStatusMessage = result.Message;
+
+            if (result.IsSuccess)
+            {
+                SelectedCheckoutStudent = null;
+                await LoadDataAsync();
+            }
+        }
+        catch (Exception)
+        {
+            MultiCheckoutStatusMessage =
+                "Checkout could not be confirmed. Refresh the lists and check Active Borrowings before retrying.";
+            await LoadDataAsync();
         }
     }
 }

@@ -8,7 +8,7 @@ public class BorrowEquipmentService
     private readonly IEquipmentRepository _equipmentRepository;
     private readonly IBorrowingRepository _borrowingRepository;
     private readonly IUnitOfWork _unitOfWork;
-    private const int MaxBorrowLimit = 5;
+    private const int MaxBorrowLimit = 3;
     public BorrowEquipmentService(
     IStudentRepository studentRepository,
     IEquipmentRepository equipmentRepository,
