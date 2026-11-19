@@ -52,5 +52,8 @@ public interface IEquipmentBorrowingOperations
     string? contact,
     bool isAuthorized,
     CancellationToken cancellationToken = default);
+    Task<IEnumerable<Borrowing>> GetStudentBorrowingHistoryAsync(
+    string studentId,
+    CancellationToken cancellationToken = default);
 
 }
