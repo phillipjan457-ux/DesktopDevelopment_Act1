@@ -173,4 +173,15 @@ public sealed class ScopedEquipmentBorrowingOperations
             expectedReturnDate,
             cancellationToken);
     }
+    public async Task<IEnumerable<Borrowing>> GetStudentBorrowingHistoryAsync(
+    string studentId,
+    CancellationToken cancellationToken = default)
+    {
+        await using var scope = _scopeFactory.CreateAsyncScope();
+
+        var repository = scope.ServiceProvider
+            .GetRequiredService<IBorrowingRepository>();
+
+        return await repository.ListOfBorrows(studentId, cancellationToken);
+    }
 }

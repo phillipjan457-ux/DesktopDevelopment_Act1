@@ -1,10 +1,11 @@
-using System;
-using System.Collections.ObjectModel;
-using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using EquipmentBorrowing.Application.Interfaces;
 using EquipmentBorrowing.Domain;
+using System;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace EquipmentBorrowing.Desktop.ViewModels;
 
@@ -21,6 +22,17 @@ public partial class BorrowingsViewModel : ViewModelBase
     [ObservableProperty]
     private string? statusMessage;
 
+    [ObservableProperty]
+    private ObservableCollection<Student> studentList = new();
+
+    [ObservableProperty]
+    private Student? selectedHistoryStudent;
+
+    [ObservableProperty]
+    private ObservableCollection<Borrowing> studentBorrowingHistory = new();
+
+    [ObservableProperty]
+    private string historyStatusMessage = string.Empty;
     public BorrowingsViewModel(IEquipmentBorrowingOperations operations)
     {
         _operations = operations;
@@ -29,6 +41,8 @@ public partial class BorrowingsViewModel : ViewModelBase
 
     private async Task LoadDataAsync()
     {
+        var students = await _operations.GetStudentsAsync();
+        StudentList = new ObservableCollection<Student>(students);
         try
         {
             var borrowings = await _operations.GetActiveBorrowingsAsync();
@@ -62,10 +76,41 @@ public partial class BorrowingsViewModel : ViewModelBase
             {
                 await LoadDataAsync();
             }
+            if (SelectedHistoryStudent is not null)
+            {
+                await LoadStudentHistoryAsync();
+            }
         }
         catch (Exception)
         {
             StatusMessage = "Could not complete the return. Reload the borrowings list before retrying.";
+        }
+    }
+    [RelayCommand]
+    private async Task LoadStudentHistoryAsync()
+    {
+        if (SelectedHistoryStudent is null)
+        {
+            StudentBorrowingHistory.Clear();
+            HistoryStatusMessage = "Select a student to view their borrowing history.";
+            return;
+        }
+
+        try
+        {
+            var history = (await _operations.GetStudentBorrowingHistoryAsync(
+                SelectedHistoryStudent.StudentId)).ToList();
+
+            StudentBorrowingHistory =
+                new ObservableCollection<Borrowing>(history);
+
+            HistoryStatusMessage = history.Count == 0
+                ? "This student has no borrowing history."
+                : $"Showing {history.Count} borrowing record(s).";
+        }
+        catch (Exception)
+        {
+            HistoryStatusMessage = "Could not load this student's borrowing history.";
         }
     }
 }
