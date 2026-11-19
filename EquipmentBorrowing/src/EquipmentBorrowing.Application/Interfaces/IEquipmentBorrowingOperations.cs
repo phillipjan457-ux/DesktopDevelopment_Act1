@@ -55,5 +55,10 @@ public interface IEquipmentBorrowingOperations
     Task<IEnumerable<Borrowing>> GetStudentBorrowingHistoryAsync(
     string studentId,
     CancellationToken cancellationToken = default);
+    Task<IEnumerable<Equipment>> GetAllEquipmentAsync(
+    CancellationToken cancellationToken = default);
 
+    Task<IEnumerable<Borrowing>> GetEquipmentBorrowingHistoryAsync(
+        string equipmentId,
+        CancellationToken cancellationToken = default);
 }

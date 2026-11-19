@@ -35,4 +35,18 @@ public class InMemoryBorrowingRepository : IBorrowingRepository
         var active = _borrowings.Where(b => b.Status == BorrowingStatus.Active);
         return Task.FromResult(active);
     }
+    public Task<IEnumerable<Borrowing>> ListByEquipmentAsync(
+    string equipmentId,
+    CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        var borrowings = _borrowings
+            .Where(borrowing => borrowing.EquipmentId == equipmentId)
+            .OrderByDescending(borrowing => borrowing.BorrowDate)
+            .ThenBy(borrowing => borrowing.BorrowId)
+            .ToList();
+
+        return Task.FromResult<IEnumerable<Borrowing>>(borrowings);
+    }
 }

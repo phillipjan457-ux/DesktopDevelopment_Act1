@@ -76,6 +76,48 @@
         </ListBox>
     </StackPanel>
 </Border>
+        <Border Classes="Card" Margin="0,10,0,0">
+    <StackPanel Spacing="8">
+        <TextBlock Text="Equipment Borrowing History"
+                   Classes="SectionLabel" />
+
+        <TextBlock Text="Select equipment:" />
+        <ComboBox ItemsSource="{Binding EquipmentList}"
+                  SelectedItem="{Binding SelectedHistoryEquipment}">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Name}" />
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+
+        <Button Content="Show Equipment History"
+                Command="{Binding LoadEquipmentHistoryCommand}"
+                HorizontalAlignment="Left" />
+
+        <TextBlock Text="{Binding EquipmentHistoryStatusMessage}"
+                   Classes="StatusMessage" />
+
+        <ListBox ItemsSource="{Binding EquipmentBorrowingHistory}"
+                 MaxHeight="300"
+                 ScrollViewer.VerticalScrollBarVisibility="Auto">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Border Classes="ItemCard">
+                        <StackPanel>
+                            <TextBlock Text="{Binding Student.Name}"
+                                       FontWeight="Bold" />
+                            <TextBlock Text="{Binding BorrowDate, StringFormat='Borrowed: {0:d}'}" />
+                            <TextBlock Text="{Binding ReturnDate, StringFormat='Due: {0:d}'}" />
+                            <TextBlock Text="{Binding ReturnedAt, StringFormat='Returned: {0:d}'}" />
+                            <TextBlock Text="{Binding Status, StringFormat='Status: {0}'}" />
+                        </StackPanel>
+                    </Border>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </StackPanel>
+</Border>
     </StackPanel>
     </ScrollViewer>
 </UserControl>
