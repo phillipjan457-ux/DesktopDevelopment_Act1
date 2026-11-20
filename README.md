@@ -12,7 +12,7 @@ Holds the use cases and business logic that coordinate Domain objects to perform
 
 **Infrastructure**
 
-Contains the concrete implementations of the repository interfaces defined in Application. For this scenario, InMemoryStudentRepository, InMemoryEquipmentRepository, and InMemoryBorrowingRepository store data in in-memory collections (Dictionary and List) instead of a real database, since no database is required yet.
+Contains the EF Core repository implementations used by the desktop application to store students, equipment, and borrowing records in PostgreSQL. The ConsoleDemo uses in-memory repositories. EfUnitOfWork saves related database changes together.
 
 **Tests**
 
@@ -91,10 +91,13 @@ Application Service --> Domain
 Repository Interface
     ^
     |
-EF Repository Implementation
+EF Core Repository Implementation
     |
     v
-SQLite Database
+PostgreSQL Database
+
+ConsoleDemo --> Application Service
+ConsoleDemo --> In-Memory Repositories
 ```
 
 ## 7. Borrow Equipment Flow
@@ -310,3 +313,31 @@ that borrowing and returning equipment persist after restarting the application.
    Provider configuration, migrations, and provider-specific mappings or
    queries would need review. The Views, ViewModels, and application services
    could largely remain unchanged because they depend on abstractions.
+
+## 11. Laboratory Activity 4 — Campus Equipment Borrowing System
+
+### Current features
+
+- Register and update students, institutional numbers, and borrowing authorization.
+- Register and update equipment, including equipment IDs.
+- Borrow one item or check out multiple items.
+- Return equipment and view student and equipment borrowing histories.
+- Search, filter, and sort borrowing records.
+
+### Current architecture
+
+The desktop application uses Avalonia, application services, Entity Framework Core, and PostgreSQL. The ConsoleDemo uses in-memory repositories. The test project includes service and persistence tests; its persistence test uses an in-memory SQLite database.
+
+### Configure the database connection
+
+The desktop application reads its PostgreSQL connection string from the `EQUIPMENT_BORROWING_CONNECTION` Windows user environment variable. Set this variable on your computer; do not add a real password or connection string to this README or commit it to Git.
+
+### Restore tools, update the database, build, and run
+
+Run these commands from the repository root:
+
+```powershell
+dotnet tool restore
+dotnet ef database update --project .\EquipmentBorrowing\src\EquipmentBorrowing.Infrastructure --startup-project .\EquipmentBorrowing\src\EquipmentBorrowing.Infrastructure
+dotnet build .\EquipmentBorrowing\EquipmentBorrowing.sln
+dotnet run --project .\EquipmentBorrowing\src\EquipmentBorrowing.Desktop
