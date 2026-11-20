@@ -25,7 +25,23 @@ public class BorrowingPersistenceTests
         // Create the schema, seed it, and borrow the laptop.
         await using (var context = new EquipmentBorrowingDbContext(options))
         {
-            await context.Database.MigrateAsync();
+            await context.Database.EnsureCreatedAsync();
+            context.Students.Add(new Student
+            {
+                StudentId = "1",
+                Name = "John Doe",
+                Program = "Computer Science",
+                IsAuthorized = true
+            });
+
+            context.Equipment.Add(new Equipment
+            {
+                EquipmentId = "1",
+                Name = "Laptop",
+                Type = "Electronics"
+            });
+
+            await context.SaveChangesAsync();
 
             var service = new BorrowEquipmentService(
                 new EfStudentRepository(context),
