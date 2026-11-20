@@ -104,7 +104,9 @@
     <StackPanel Spacing="8">
         <TextBlock Text="Update Selected Equipment" Classes="SectionLabel" />
         <TextBlock Text="Select an equipment item in the list above, then edit its details." />
-
+        <TextBlock Text="Equipment ID:" />
+<TextBox Text="{Binding EquipmentUpdateIdInput}"
+         PlaceholderText="Enter equipment ID" />
         <TextBlock Text="Name:" />
         <TextBox Text="{Binding EquipmentUpdateNameInput}"
                  PlaceholderText="Enter equipment name" />
@@ -116,6 +118,8 @@
         <Button Content="Update Equipment"
                 Command="{Binding UpdateEquipmentCommand}"
                 HorizontalAlignment="Left" />
+        <TextBlock Text="{Binding EquipmentUpdateStatusMessage}"
+           Classes="StatusMessage" />
     </StackPanel>
 </Border>
         <Border Classes="Card">

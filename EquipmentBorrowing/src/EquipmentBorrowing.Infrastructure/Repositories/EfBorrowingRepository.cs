@@ -111,4 +111,17 @@ public class EfBorrowingRepository : IBorrowingRepository
                     updatedStudent.StudentId),
                 cancellationToken);
     }
+    public async Task UpdateEquipmentIdAsync(
+    string oldEquipmentId,
+    Equipment updatedEquipment,
+    CancellationToken cancellationToken = default)
+    {
+        await _context.Borrowings
+            .Where(borrowing => borrowing.EquipmentId == oldEquipmentId)
+            .ExecuteUpdateAsync(
+                setters => setters.SetProperty(
+                    borrowing => borrowing.EquipmentId,
+                    updatedEquipment.EquipmentId),
+                cancellationToken);
+    }
 }

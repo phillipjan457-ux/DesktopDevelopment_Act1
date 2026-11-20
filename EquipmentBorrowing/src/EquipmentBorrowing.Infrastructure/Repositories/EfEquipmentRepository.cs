@@ -72,4 +72,12 @@ public class EfEquipmentRepository : IEquipmentRepository
         _context.Equipment.Add(equipment);
         return Task.CompletedTask;
     }
+    public Task DeleteEquipmentAsync(
+    Equipment equipment,
+    CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        _context.Equipment.Remove(equipment);
+        return Task.CompletedTask;
+    }
 }

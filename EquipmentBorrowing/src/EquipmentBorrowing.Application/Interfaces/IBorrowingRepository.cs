@@ -17,4 +17,8 @@ public interface IBorrowingRepository
     string oldStudentId,
     Student updatedStudent,
     CancellationToken cancellationToken = default);
+    Task UpdateEquipmentIdAsync(
+    string oldEquipmentId,
+    Equipment updatedEquipment,
+    CancellationToken cancellationToken = default);
 }

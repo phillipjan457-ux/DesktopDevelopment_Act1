@@ -80,11 +80,17 @@ public partial class EquipmentViewModel : ViewModelBase
     private string borrowStatusMessage = string.Empty;
     [ObservableProperty]
     private string studentUpdateIdInput = string.Empty;
+    [ObservableProperty]
+    private string equipmentUpdateIdInput = string.Empty;
+
+    [ObservableProperty]
+    private string equipmentUpdateStatusMessage = string.Empty;
 
     partial void OnSelectedEquipmentChanged(Equipment? value)
     {
         EquipmentUpdateNameInput = value?.Name ?? string.Empty;
         EquipmentUpdateDescriptionInput = value?.Description ?? string.Empty;
+        EquipmentUpdateIdInput = value?.EquipmentId ?? string.Empty;
     }
 
     partial void OnSelectedStudentForUpdateChanged(Student? value)
@@ -265,13 +271,14 @@ public partial class EquipmentViewModel : ViewModelBase
     {
         if (SelectedEquipment is null)
         {
-            StatusMessage = "Select equipment from the list first.";
+            EquipmentUpdateStatusMessage = "Select equipment from the list first.";
             return;
         }
 
-        if (string.IsNullOrWhiteSpace(EquipmentUpdateNameInput))
+        if (string.IsNullOrWhiteSpace(EquipmentUpdateIdInput) ||
+            string.IsNullOrWhiteSpace(EquipmentUpdateNameInput))
         {
-            StatusMessage = "Equipment name is required.";
+            EquipmentUpdateStatusMessage = "Equipment ID and name are required.";
             return;
         }
 
@@ -279,19 +286,22 @@ public partial class EquipmentViewModel : ViewModelBase
         {
             var result = await _operations.UpdateEquipmentAsync(
                 SelectedEquipment.EquipmentId,
+                EquipmentUpdateIdInput,
                 EquipmentUpdateNameInput,
                 EquipmentUpdateDescriptionInput);
 
-            StatusMessage = result.Message;
+            EquipmentUpdateStatusMessage = result.Message;
 
             if (result.IsSuccess)
             {
+                SelectedEquipment = null;
                 await LoadDataAsync();
             }
         }
         catch (Exception)
         {
-            StatusMessage = "Could not update the equipment. Please try again.";
+            EquipmentUpdateStatusMessage =
+                "Could not update the equipment. Please try again.";
         }
     }
     [RelayCommand]

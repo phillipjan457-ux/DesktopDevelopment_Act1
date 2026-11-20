@@ -77,4 +77,20 @@ public class InMemoryBorrowingRepository : IBorrowingRepository
 
         return Task.CompletedTask;
     }
+    public Task UpdateEquipmentIdAsync(
+    string oldEquipmentId,
+    Equipment updatedEquipment,
+    CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        foreach (var borrowing in _borrowings.Where(
+                     borrowing => borrowing.EquipmentId == oldEquipmentId))
+        {
+            borrowing.EquipmentId = updatedEquipment.EquipmentId;
+            borrowing.Equipment = updatedEquipment;
+        }
+
+        return Task.CompletedTask;
+    }
 }
