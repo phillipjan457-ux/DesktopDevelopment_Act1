@@ -42,6 +42,7 @@ public interface IEquipmentBorrowingOperations
     CancellationToken cancellationToken = default);
     Task<EquipmentUpdateResult> UpdateEquipmentAsync(
     string equipmentId,
+    string newEquipmentId,
     string name,
     string? description,
     CancellationToken cancellationToken = default);

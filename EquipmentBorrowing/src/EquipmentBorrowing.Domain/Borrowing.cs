@@ -7,8 +7,8 @@ public class Borrowing
     public required string StudentId { get; set; }
     public required Student Student { get; set; }
 
-    public required string EquipmentId { get; init; }
-    public required Equipment Equipment { get; init; }
+    public required string EquipmentId { get; set; }
+    public required Equipment Equipment { get; set; }
 
     public required DateTime BorrowDate { get; init; }
     public required DateTime ReturnDate { get; init; }

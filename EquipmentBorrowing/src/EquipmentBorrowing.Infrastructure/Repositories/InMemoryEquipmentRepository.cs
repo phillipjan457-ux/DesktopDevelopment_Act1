@@ -57,5 +57,13 @@ public class InMemoryEquipmentRepository : IEquipmentRepository
         _equipment.Add(equipment.EquipmentId, equipment);
         return Task.CompletedTask;
     }
- 
+    public Task DeleteEquipmentAsync(
+    Equipment equipment,
+    CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        _equipment.Remove(equipment.EquipmentId);
+        return Task.CompletedTask;
+    }
+
 }

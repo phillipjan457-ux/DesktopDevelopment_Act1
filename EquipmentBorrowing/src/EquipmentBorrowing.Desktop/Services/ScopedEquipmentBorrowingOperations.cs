@@ -120,6 +120,7 @@ public sealed class ScopedEquipmentBorrowingOperations
     }
     public async Task<EquipmentUpdateResult> UpdateEquipmentAsync(
     string equipmentId,
+    string newEquipmentId,
     string name,
     string? description,
     CancellationToken cancellationToken = default)
@@ -131,6 +132,7 @@ public sealed class ScopedEquipmentBorrowingOperations
 
         return await service.UpdateAsync(
             equipmentId,
+            newEquipmentId,
             name,
             description,
             cancellationToken);

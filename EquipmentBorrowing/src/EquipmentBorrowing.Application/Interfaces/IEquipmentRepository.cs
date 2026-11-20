@@ -12,4 +12,7 @@ public interface IEquipmentRepository
     Task AddEquipmentAsync(
     Equipment equipment,
     CancellationToken cancellationToken = default);
+    Task DeleteEquipmentAsync(
+    Equipment equipment,
+    CancellationToken cancellationToken = default);
 }
